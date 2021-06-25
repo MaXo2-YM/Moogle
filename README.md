@@ -11,7 +11,7 @@ A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first r
 1. Add `!help` command
 1. Add `!wiki` command
 1. Add `!steam` command ?
-
+1. Add google translate ?
 ## Dependencies
 ### Before coding
 You'll need 3 things before you even get started :
