@@ -1,2 +1,4 @@
 Gemfile.lock
 .vscode/*
+conf/APIGoogle.conf
+conf/discord.conf
