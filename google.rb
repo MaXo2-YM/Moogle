@@ -2,7 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-load '.\conf\APIGoogle.conf' # $GOOGLECONF const
+load './conf/APIGoogle.conf' # $GOOGLECONF const
 
 def googleSearch(message)
   params = {
