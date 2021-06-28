@@ -17,6 +17,13 @@ def googleSearch(message)
   uri = createUri($GOOGLECONF['url'], params)
   respJSON = sendRequestToJSON(uri)
 
+  if (respJSON == 0)
+    message.respond 'Désolé, frère, j\'trouve rien.'
+  elsif (respJSON['code'])
+    message.respond "y'a un Bug API la putain de ta grand mère."
+    message.respond "Code retour : `#{respJSON['code']}`"
+    message.respond "Message : `#{respJSON['message']}`"
+  else
   message.channel.send_embed do |embed|
     embed.title = respJSON['items'][0]['title']
     embed.url = respJSON['items'][0]['link']
@@ -24,6 +31,7 @@ def googleSearch(message)
     embed.description = respJSON['items'][0]['snippet']
     embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: respJSON['items'][0]['displayLink'])
   end
+end
 end
 
 def createUri(url, params)
@@ -42,5 +50,17 @@ def sendRequestToJSON(uri)
     http.request(request)
   end
 
-  JSON.parse(response.body)
+  if(response.code == '200')
+    respJSON = JSON.parse(response.body)
+    if(respJSON['searchInformation']['totalResults'] != '0')
+      respJSON
+    else
+      0
+    end
+  else
+    {
+      'code' => response.code,
+      'message' => response.message
+    }
+  end
 end
