@@ -15,12 +15,3 @@ bot.message do |message|
 end
 
 bot.run
-
-#  @TODO :
-#  Refactor (configs in separate files, commands list in separate file, beautify and clean code)
-#  add error management
-#  add daily count and stop
-#  add mention
-#  add google image
-#  add YouTube
-#  add help
