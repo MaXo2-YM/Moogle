@@ -18,24 +18,8 @@ def googleSearch(message)
   respJSON = sendRequestToJSON(uri)
 
   log(message,respJSON)
-  
-  if (respJSON['code'] == "200")
-    message.channel.send_embed do |embed|
-      embed.title = respJSON['items'][0]['title']
-      embed.url = respJSON['items'][0]['link']
-      if(respJSON['items'][0]['pagemap']['cse_thumbnail'])
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: respJSON['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
-      end
-      embed.description = respJSON['items'][0]['snippet']
-      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: respJSON['items'][0]['displayLink'])
-    end
-  elsif (respJSON['code'] == "0")
-    message.respond 'Désolé, frère, j\'trouve rien.'
-  else
-    message.respond 'y\'a un Bug API la putain de ta grand mère.'
-    message.respond "Code retour : `#{respJSON['code']}`"
-    message.respond "Message : `#{respJSON['message']}`"
-  end
+
+  sendResponseToChannel(message,respJSON)
 end
 
 def createUri(url, params)

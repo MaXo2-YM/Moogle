@@ -10,6 +10,26 @@ def extract_params(message)
   args = message.content[message.content.index(" ")+1..] # all after first space
 end
 
+def sendResponseToChannel(message, response)
+  if (response['code'] == "200")
+    message.channel.send_embed do |embed|
+      embed.title = response['items'][0]['title']
+      embed.url = response['items'][0]['link']
+      if(respresponseJSON['items'][0]['pagemap']['cse_thumbnail'])
+        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
+      end
+      embed.description = respJSON['items'][0]['snippet']
+      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
+    end
+  elsif (response['code'] == "0")
+    message.respond 'Désolé, frère, j\'trouve rien.'
+  else
+    message.respond 'y\'a un Bug API la putain de ta grand mère.'
+    message.respond "Code retour : `#{response['code']}`"
+    message.respond "Message : `#{response['message']}`"
+  end
+end
+
 def log(message, response)
   respTime = Time.new.strftime("[%d/%m/%Y - %H:%M:%S]")
 
