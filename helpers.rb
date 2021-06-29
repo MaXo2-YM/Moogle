@@ -41,4 +41,6 @@ def log(message, response)
   line = "#{respTime}\t#{message.author.username}\t#{extract_cmd(message)}\t#{extract_params(message)}\t#{response['code']}\t#{link}"
 
   puts line
+  File.write($logfile, line + "\n", mode: 'a')
+
 end
