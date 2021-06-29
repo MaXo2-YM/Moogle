@@ -15,10 +15,10 @@ def sendResponseToChannel(message, response)
     message.channel.send_embed do |embed|
       embed.title = response['items'][0]['title']
       embed.url = response['items'][0]['link']
-      if(respresponseJSON['items'][0]['pagemap']['cse_thumbnail'])
+      if(response['items'][0]['pagemap']['cse_thumbnail'])
         embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
       end
-      embed.description = respJSON['items'][0]['snippet']
+      embed.description = response['items'][0]['snippet']
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
     end
   elsif (response['code'] == "0")
