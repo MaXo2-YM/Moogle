@@ -17,6 +17,8 @@ def googleSearch(message)
   uri = createUri($GOOGLECONF['url'], params)
   respJSON = sendRequestToJSON(uri)
 
+  log(message,respJSON)
+  
   if (respJSON['code'] == "200")
     message.channel.send_embed do |embed|
       embed.title = respJSON['items'][0]['title']

@@ -5,6 +5,10 @@ load './conf/discord.conf' # $discord const
 load './conf/cmd.conf' # $commands const
 
 bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix']
+bot.ready do |event|
+  puts "[   Date    -   Time  ]\tUser\tCommand\tRequest\t\t\t\tStatus\tlink"
+end
+
 
 bot.message do |message|
   if(bot.prefix == extract_prefix(message))
