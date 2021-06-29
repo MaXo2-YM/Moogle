@@ -24,14 +24,16 @@ def googleSearch(message)
     message.respond "Code retour : `#{respJSON['code']}`"
     message.respond "Message : `#{respJSON['message']}`"
   else
-  message.channel.send_embed do |embed|
-    embed.title = respJSON['items'][0]['title']
-    embed.url = respJSON['items'][0]['link']
-    embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: respJSON['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
-    embed.description = respJSON['items'][0]['snippet']
-    embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: respJSON['items'][0]['displayLink'])
+    message.channel.send_embed do |embed|
+      embed.title = respJSON['items'][0]['title']
+      embed.url = respJSON['items'][0]['link']
+      if(respJSON['items'][0]['pagemap']['cse_thumbnail'])
+        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: respJSON['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
+      end
+      embed.description = respJSON['items'][0]['snippet']
+      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: respJSON['items'][0]['displayLink'])
+    end
   end
-end
 end
 
 def createUri(url, params)
