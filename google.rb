@@ -17,7 +17,9 @@ def googleSearch(message)
   uri = createUri($GOOGLECONF['url'], params)
   respJSON = sendRequestToJSON(uri)
 
-  log(message,respJSON)
+  if($LogToConsole || $LogToFile)
+    log(message,respJSON)
+  end
 
   sendResponseToChannel(message,respJSON)
 end
