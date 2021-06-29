@@ -12,7 +12,7 @@ A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first r
 1. Add `!wiki` command
 1. Add `!steam` command ?
 1. Add google translate ?
-
+  
 See [Project](https://github.com/MaXo2-YM/Moogle/projects/1).
 
 ## Dependencies
@@ -32,9 +32,9 @@ You'll need 3 things before you even get started :
 2. Install dependencies with`$ bundle install`
 **or** `$ gem install discordrb`
 3. Set the tokens and keys :
-	- `APIKey` in `./conf/APIGoogle.conf`
-	- `customSearchID` in `./conf/APIGoogle.conf`
-	- `token` in `./conf/discord.conf`
+- `APIKey` in `./conf/APIGoogle.conf`
+- `customSearchID` in `./conf/APIGoogle.conf`
+- `token` in `./conf/discord.conf`
 4. Run with `$ ruby main.rb`
 
 ## Daily Count ?
@@ -43,6 +43,29 @@ You'll need 3 things before you even get started :
 When you installed the Custom Search API to your Google API app, you may have noticed that the Custom Search API will charge you above 100 requests a day (then $0,005 per request).
 A hundred request a day is a lot of request for a small servers, but if the bot feel usefull to your users -or you have a medium-to-big community- you maybe exceed this threshold and will need to pay.
 Since I'm doing it for fun and don't want to be charged because of some spamming troll, I will cap the utilisation of `!google` to 100 request a day. It will be a optionnal parameter at lauch and you'll be able to toggle the default option in a conf file (if you already pay for a Google API App or if your Discord server generate money and you don't mind to paying for this service)
+
+## Logs
+You can choose to log all requests and responses either to the console, to a file or both. It will be display as
+|[Date - Time]|User|command|request|Status|Link|
+|:--:|:--:|:--:|:--:|:--:|:--:|
+|Format : DD/MM/YYYY - HH:MM:SS|Nickname of the user|the command used||the response code :| the link if the request is successfull|
+|||||`200` if request ok||
+|||||`0` if request ok but no results found||
+|||||[HTTP Error Code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) if an error pop||
+
+### Log to console
+To log all requests and responses directly to the console,  you can:
+
+- use the option `--verbose` (or `-v` to be coupled with other options) when you launch directly the bot
+	> Ex : `$ ruby main.rb -v`
+- edit `./conf/app.conf` and put the `$LogToConsole` constant to `true` (default: `False`). this way, it will automatically log to consol when you launch the bot without parameters
+
+### Log to file
+Logs will be kept in `./log` in a file named `moogle_YYYY-MM-DD_HH_MM_SS.log` with the time you launch the bot
+to activate le log in file, you can:
+- use the option `--log` (or `-l` to be coupled with other options) when you launch directly the bot
+	> Ex : `$ ruby main.rb -l`
+- edit `./conf/app.conf` and put the `$LogToFile` constant to `true` (default: `False`). this way, it will automatically log to consol when you launch the bot without parameters
 
 ## Features
 ### `!google <search>`
