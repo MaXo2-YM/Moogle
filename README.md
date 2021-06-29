@@ -29,7 +29,7 @@ You'll need 3 things before you even get started :
 
 ## Installation
 1. Clone this repository
-2. Install dependencies with`$ bundle install`
+2. Install dependencies with `$ bundle install`
 **or** `$ gem install discordrb`
 3. Set the tokens and keys :
 - `APIKey` in `./conf/APIGoogle.conf`
@@ -41,7 +41,9 @@ You'll need 3 things before you even get started :
 > Why will be a Daily Count of Searches ?
 
 When you installed the Custom Search API to your Google API app, you may have noticed that the Custom Search API will charge you above 100 requests a day (then $0,005 per request).
+
 A hundred request a day is a lot of request for a small servers, but if the bot feel usefull to your users -or you have a medium-to-big community- you maybe exceed this threshold and will need to pay.
+
 Since I'm doing it for fun and don't want to be charged because of some spamming troll, I will cap the utilisation of `!google` to 100 request a day. It will be a optionnal parameter at lauch and you'll be able to toggle the default option in a conf file (if you already pay for a Google API App or if your Discord server generate money and you don't mind to paying for this service)
 
 ## Logs
@@ -69,9 +71,10 @@ to activate le log in file, you can:
 
 ## Features
 ### `!google <search>`
-> aliases : `!moogle`, `!gougle`, `!gl`, `!mg` (all casse insensitive)
+> aliases : `!moogle`, `!gougle`, `!gl`, `!ml` (all casse insensitive)
 
 It send the first result of a google search to the channel with Title, Description (when available), Thumbnail (when available) and direct Link.
+
 In the future, there will be options for Google Images, SafeSearch, and more.
 
 ### Mention <search>
