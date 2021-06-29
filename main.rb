@@ -5,6 +5,15 @@ load './conf/app.conf'
 load './conf/discord.conf' # $discord const
 load './conf/cmd.conf' # $commands const
 
+for arg in ARGV
+  if(arg.match(/-(-verbose|[a-z]*v[a-z]*)/))
+    $LogToConsole = true
+  end
+  if(arg.match(/-(-log|[a-z]*l[a-z]*)/))
+    $LogToFile = true
+  end
+end
+
 bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix']
 bot.ready do |event|
   if($LogToConsole)
