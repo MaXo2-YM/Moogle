@@ -1,0 +1,4 @@
+$__error_no_results_found = 'Sorry, bro, I don\'t find shit.'
+$__error_api_google = "There's a motherfucking bug in the motherfucking API.\nError code: `%1`\nMessage: `%2`"
+$__error_cap_limit_exceeded = 'Sorry bruh, I\'ll not be able to perform search before %1 :('
+$__date_format_cap_limit = '%m/%d/%Y at %H:%M:%S'
