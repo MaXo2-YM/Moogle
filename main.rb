@@ -1,6 +1,7 @@
 require 'discordrb'
 require_relative 'google'
 require_relative 'helpers'
+require_relative 'count'
 load './conf/app.conf'
 load './conf/discord.conf' # $discord const
 load './conf/cmd.conf' # $commands const
@@ -31,9 +32,19 @@ end
 bot.message do |message|
   if(bot.prefix == extract_prefix(message))
     if(extract_cmd(message).match($commands['google'])) 
+      if($LimitSearch != 0)
+        countRequests = countRecentRequest
+        if(countRequests.length < $LimitSearch)
+          addRequestToCount
+          googleSearch(message)
+        else
+          message.respond "Désolé bro, je ne pourrais plus faire de recherche avant le #{getNextRequestTime(countRequests)} :("
+        end
+      else
       googleSearch(message)
     end
   end
+end
 end
 
 bot.run
