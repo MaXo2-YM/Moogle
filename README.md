@@ -110,7 +110,7 @@ In the file `./conf/app.conf` you'll find a global variable named `$Language` th
 
 > But wait, there's more !
 
-For now, you'll also have to edit `./conf/APIGoogle.conf` to change the `geoloc` and `UIlang` parameters to match your language too. In the future, theses parameters will be determined straight from your locale. And in another future, this will be an optional parameter send with the request by the user !
+For now, you'll also have to edit `./conf/APIGoogle.conf` to change the `geoloc` (see [doc](https://developers.google.com/custom-search/docs/xml_results_appendices?hl=fr#countryCodes)) and `UIlang` (see [doc](https://developers.google.com/custom-search/docs/xml_results_appendices?hl=fr#interfaceLanguages)) parameters to match your language too. In the future, theses parameters will be determined straight from your locale. And in another future, this will be an optional parameter send with the request by the user !
 
 ### Commands
 #### `!google <search>`
