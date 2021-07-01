@@ -101,10 +101,13 @@ to activate le log in file, you can:
 Some of the bot responses are expressed in a language (for now it's just the error messages). I made them in french beacause the users that the bot is destined to are french, but I also made them in english for the most common use. Feel free to add your own language too (and I'll be glad to see your pull request !)
 
 > How does it work ?!
+
 Well, the language file are in the `./lang/` directory. The files are nammed with the [Locale guidelines](https://lh.2xlibre.net/locales/) (`fr_FR`,`en_EN`, etc)
 the files uses global variable in which are stored the translations. If you need to pass variables to the string, use the %1, %2,... format like in the file you already have.
 In the file `app.conf` you'll find a global variable named `$Language` that you can edit to put your locale.
+
 > But wait, there's more !
+
 For now, you'll also have to edit `./conf/APIGoogle.conf` to change the `geoloc` and `UIlang` parameters to match your language too. In the future, theses parameters will be determined straight from your locale. And in another future, this will be an optional parameter send with the request by the user !
 
 ### Commands
