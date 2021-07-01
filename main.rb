@@ -5,6 +5,7 @@ require_relative 'count'
 load './conf/app.conf'
 load './conf/discord.conf' # $discord const
 load './conf/cmd.conf' # $commands const
+load "./lang/#{$Language}"
 
 for arg in ARGV
   if(arg.match(/-(-verbose|[a-z]*v[a-z]*)/))
@@ -41,7 +42,7 @@ bot.message do |message|
           addRequestToCount
           googleSearch(message)
         else
-          message.respond "Désolé bro, je ne pourrais plus faire de recherche avant le #{getNextRequestTime(countRequests)} :("
+          message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRequests))
         end
       else
         googleSearch(message)

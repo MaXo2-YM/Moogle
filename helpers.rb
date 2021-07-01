@@ -22,11 +22,9 @@ def sendResponseToChannel(message, response)
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
     end
   elsif (response['code'] == "0")
-    message.respond 'Désolé, frère, j\'trouve rien.'
+    message.respond $__error_no_results_found
   else
-    message.respond 'y\'a un Bug API la putain de ta grand mère.'
-    message.respond "Code retour : `#{response['code']}`"
-    message.respond "Message : `#{response['message']}`"
+    message.respond $__error_api_google.gsub(/%[0-9]/, '%1' => response['code'], '%2' => response['message'])
   end
 end
 
