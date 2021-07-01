@@ -5,7 +5,7 @@ A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first r
 ## Index
 - [RoadMap](#roadmap)
 - [Dependencies](#dependencies)
-	-  [Before coding](#befor-coding)
+	-  [Before coding](#before-coding)
 	- [Starting to code](#starting-to-code)
 - [Installation](#installation)
 - [Features](#features)
