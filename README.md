@@ -104,7 +104,7 @@ Some of the bot responses are expressed in a language (for now it's just the err
 
 Well, the language file are in the `./lang/` directory. The files are nammed with the [Locale guidelines](https://lh.2xlibre.net/locales/) (`fr_FR`,`en_EN`, etc)
 the files uses global variable in which are stored the translations. If you need to pass variables to the string, use the %1, %2,... format like in the file you already have.
-In the file `app.conf` you'll find a global variable named `$Language` that you can edit to put your locale.
+In the file `./conf/app.conf` you'll find a global variable named `$Language` that you can edit to put your locale.
 
 > But wait, there's more !
 
