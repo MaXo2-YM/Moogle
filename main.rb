@@ -13,6 +13,9 @@ for arg in ARGV
   if(arg.match(/-(-log|[a-z]*l[a-z]*)/))
     $LogToFile = true
   end
+  if(arg.match(/-(-uncap|[a-z]*uc[a-z]*)/))
+    $LimitSearch = 0
+  end
 end
 
 bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix']
@@ -31,7 +34,7 @@ end
 
 bot.message do |message|
   if(bot.prefix == extract_prefix(message))
-    if(extract_cmd(message).match($commands['google'])) 
+    if(extract_cmd(message).match($commands['google']))
       if($LimitSearch != 0)
         countRequests = countRecentRequest
         if(countRequests.length < $LimitSearch)
@@ -41,10 +44,10 @@ bot.message do |message|
           message.respond "Désolé bro, je ne pourrais plus faire de recherche avant le #{getNextRequestTime(countRequests)} :("
         end
       else
-      googleSearch(message)
+        googleSearch(message)
+      end
     end
   end
-end
 end
 
 bot.run
