@@ -3,3 +3,4 @@ Gemfile.lock
 conf/APIGoogle.conf
 conf/discord.conf
 log/*
+count
