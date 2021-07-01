@@ -37,14 +37,22 @@ You'll need 3 things before you even get started:
 - `token` in `./conf/discord.conf`
 4. Run with `$ ruby main.rb`
 
-## Daily Count ?
-> Why will be a Daily Count of Searches ?
-
+## Daily Count
+### Why is there a Daily Count of Searches ?
 When you installed the Custom Search API to your Google API app, you may have noticed that the Custom Search API will charge you above 100 requests a day (then $0,005 per request).
 
 A hundred request a day is a lot of request for a small servers, but if the bot feel usefull to your users -or you have a medium-to-big community- you maybe exceed this threshold and will need to pay.
 
-Since I'm doing it for fun and don't want to be charged because of some spamming troll, I will cap the utilisation of `!google` to 100 request a day. It will be a optionnal parameter at lauch and you'll be able to toggle the default option in a conf file (if you already pay for a Google API App or if your Discord server generate money and you don't mind to paying for this service)
+Since I'm doing it for fun and don't want to be charged because of some spamming troll, I caped the utilisation of `!google` to 100 request a day.
+
+### How does it work ?
+Daily count lock is enabled by default, if you want to uncap google search, you can :
+
+- use the option `--uncap` (or `-uc` to be coupled with other options) when you launch directly the bot
+> Ex : `$ ruby main.rb -v`
+- edit `./conf/app.conf` and put the `$LimitSearch` constant to `0` (default: `100`).
+
+You also can put it to whatever number you feel acceptable if you already pay for a Google API App or if your Discord server generate money and you don't mind to paying for this service but don't want to exceed a certain amount.
 
 ## Logs
 You can choose to log all requests and responses either to the console, to a file or both. It will be display as
