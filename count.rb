@@ -31,6 +31,6 @@ end
 
 def getNextRequestTime(oldRequests)
   firstRequest = Time.new(*oldRequests[0].split('.'))
-  nextResquest = firstRequest + 86400 #We had 24h
-  nextResquest.strftime("%d/%m/%Y à %H:%M:%S")
+  nextResquest = firstRequest + 86400 #We add 24h
+  nextResquest.strftime($__date_format_cap_limit)
 end
