@@ -37,13 +37,7 @@ bot.message do |message|
   if(bot.prefix == extract_prefix(message))
     if(extract_cmd(message).match($commands['google']))
       if($LimitSearch != 0)
-        countRequests = countRecentRequest
-        if(countRequests.length < $LimitSearch)
-          addRequestToCount
-          googleSearch(message)
-        else
-          message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRequests))
-        end
+        checkCountRequestLimitAndSearch(message)
       else
         googleSearch(message)
       end

@@ -1,3 +1,13 @@
+def checkCountRequestLimitAndSearch(message)
+  countRequests = countRecentRequest
+  if(countRequests.length < $LimitSearch)
+    addRequestToCount
+    googleSearch(message)
+  else
+    message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRequests))
+  end
+end
+
 def countRecentRequest
   countFile = File.open("count", "r")
     now = Time.new
