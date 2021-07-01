@@ -2,6 +2,23 @@
 
 A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first result of a google search) using `discordrb`
 
+## Index
+- [RoadMap](#roadmap)
+- [Dependencies](#dependencies)
+	-  [Before coding](#befor-coding)
+	- [Starting to code](#starting-to-code)
+- [Installation](#installation)
+- [Features](#features)
+	- [Daily Count](#daily-count)
+	- [Logs](#logs)
+	- [Commands](#commands)
+		- [`!google <search>`](#google-search)
+		- [Mention](#mention)
+		- [`!youtube <search>`](#youtube-search)
+		- [`!wiki <search>`](#wiki-search)
+		- [`!steam <search>`](#steam-search)
+		- [`!help`](#help)
+
 ## RoadMap
 1. ~~Add Error and log management~~
 1. ~~Add Daily Count and stop~~
