@@ -21,6 +21,8 @@ end
 
 bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix']
 bot.ready do |event|
+  bot.watching= "!google <search>"
+
   if($LogToConsole)
     puts "[   Date    -   Time  ]\tUser\tCommand\tRequest\t\t\t\tStatus\tlink"
   end
