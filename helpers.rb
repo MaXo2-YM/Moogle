@@ -7,7 +7,11 @@ def extract_cmd(message)
 end
 
 def extract_params(message)
-  args = message.content[message.content.index(" ")+1..] # all after first space
+  if(message.content.index(" "))
+    args = message.content[message.content.index(" ")+1..] # all after first space
+  else
+    args = '-1'
+  end
 end
 
 def sendResponseToChannel(message, response)
@@ -23,6 +27,8 @@ def sendResponseToChannel(message, response)
     end
   elsif (response['code'] == "0")
     message.respond $__error_no_results_found
+  elsif (response['code'] == "-1")
+    message.respond $__error_no_query.gsub(/%[0-9]/, '%1' => extract_cmd(message))
   else
     message.respond $__error_api_google.gsub(/%[0-9]/, '%1' => response['code'], '%2' => response['message'])
   end
