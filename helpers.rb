@@ -1,6 +1,6 @@
 def extract_prefix(message)
   if(message.content.chr == $discord['prefix'])
-  message.content.chr
+    message.content.chr
   else
     "@"
   end
@@ -8,7 +8,7 @@ end
 
 def extract_cmd(message)
   if(extract_prefix(message) == $discord['prefix'])
-  message.content[1..][/(\w+)/, 0] # first word without prefix
+    message.content[1..][/(\w+)/, 0] # first word without prefix
   else
     "Mention"
   end
@@ -18,7 +18,7 @@ def extract_params(message)
   if(message.content.index(" "))
     if(extract_prefix(message) == $discord['prefix'])
       message.content[message.content.index(" ")+1..] # all after first space
-  else
+    else
       words = message.content.split # get array of words from the message
       mention =  words.find_index{|x| x.match /<@![0-9]{18}>/ } # get the index of the mention
       words[mention+1..].join(' ') # extract the phrase after the mention
@@ -29,7 +29,8 @@ def extract_params(message)
 end
 
 def sendResponseToChannel(message, response)
-  if (response['code'] == "200")
+  case response['code']
+  when "200"
     message.channel.send_embed do |embed|
       embed.title = response['items'][0]['title']
       embed.url = response['items'][0]['link']
@@ -39,10 +40,12 @@ def sendResponseToChannel(message, response)
       embed.description = response['items'][0]['snippet']
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
     end
-  elsif (response['code'] == "0")
+  when "0"
     message.respond $__error_no_results_found
-  elsif (response['code'] == "-1")
-    message.respond $__error_no_query.gsub(/%[0-9]/, '%1' => extract_cmd(message))
+  when "-1"
+    message.respond $__error_no_query.gsub(/%[0-9]/, '%1' => extract_prefix(message) + extract_cmd(message))
+  when "999"
+    message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRecentRequest))
   else
     message.respond $__error_api_google.gsub(/%[0-9]/, '%1' => response['code'], '%2' => response['message'])
   end
