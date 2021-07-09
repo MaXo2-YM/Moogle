@@ -1,10 +1,10 @@
-def checkCountRequestLimitAndSearch(message)
+def checkCountRequestLimit(message)
   countRequests = countRecentRequest
   if(countRequests.length < $LimitSearch)
     addRequestToCount
-    googleSearch(message)
+    true
   else
-    message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRequests))
+    false
   end
 end
 
