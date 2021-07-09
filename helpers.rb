@@ -42,7 +42,9 @@ def log(message, response)
     link = response['items'][0]['link']
   end
 
-  line = "#{respTime}\t#{message.author.username}\t#{extract_cmd(message)}\t#{extract_params(message)}\t#{response['code']}\t#{link}"
+  query = extract_params(message) != '-1' ? extract_params(message) : ''
+
+  line = "#{respTime}\t#{message.author.username}\t#{extract_cmd(message)}\t#{query}\t#{response['code']}\t#{link}"
 
   if($LogToConsole)
     puts line
