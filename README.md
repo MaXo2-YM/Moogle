@@ -14,7 +14,7 @@ A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first r
 	- [Multilingual](#multilingual)
 	- [Commands](#commands)
 		- [`!google <search>`](#google-search)
-		- [Mention](#mention)
+		- [`Mention <search>`](#mention-search)
 		- [`!youtube <search>`](#youtube-search)
 		- [`!wiki <search>`](#wiki-search)
 		- [`!steam <search>`](#steam-search)
@@ -120,7 +120,7 @@ It send the first result of a google search to the channel with Title, Descripti
 
 In the future, there will be options for Google Images, SafeSearch, and more.
 
-#### Mention <search>
+#### `Mention <search>`
 Same as `!google`, but it will respond to direct mention (to add an "Ok Moogle" vibe)
 
 #### `!youtube <search>`
