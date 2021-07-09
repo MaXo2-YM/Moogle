@@ -24,7 +24,7 @@ A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first r
 1. ~~Add Error and log management~~
 1. ~~Add Daily Count and stop~~
 1. ~~Add Multilingual support~~
-1. Add Mention response
+1. ~~Add Mention response~~
 1. Add Google Images
 1. Add `!youtube` command
 1. Add `!help` command
@@ -122,7 +122,6 @@ In the future, there will be options for Google Images, SafeSearch, and more.
 
 #### Mention <search>
 Same as `!google`, but it will respond to direct mention (to add an "Ok Moogle" vibe)
-> **YET TO BE IMPLEMENTED**
 
 #### `!youtube <search>`
 >alias: `!yt` (casse insensitive)
