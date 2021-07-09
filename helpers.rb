@@ -1,16 +1,30 @@
 def extract_prefix(message)
+  if(message.content.chr == $discord['prefix'])
   message.content.chr
+  else
+    "@"
+  end
 end
 
 def extract_cmd(message)
+  if(extract_prefix(message) == $discord['prefix'])
   message.content[1..][/(\w+)/, 0] # first word without prefix
+  else
+    "Mention"
+  end
 end
 
 def extract_params(message)
   if(message.content.index(" "))
-    args = message.content[message.content.index(" ")+1..] # all after first space
+    if(extract_prefix(message) == $discord['prefix'])
+      message.content[message.content.index(" ")+1..] # all after first space
   else
-    args = '-1'
+      words = message.content.split # get array of words from the message
+      mention =  words.find_index{|x| x.match /<@![0-9]{18}>/ } # get the index of the mention
+      words[mention+1..].join(' ') # extract the phrase after the mention
+    end
+  else
+    '-1'
   end
 end
 
