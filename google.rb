@@ -5,29 +5,42 @@ require 'json'
 load './conf/APIGoogle.conf' # $GOOGLECONF const
 
 def googleSearch(message)
-  request = extract_params(message)
+  goSearch = true
 
-  if request != '-1'
+  if($LimitSearch != 0)
+    goSearch = checkCountRequestLimit(message)
+  end
+
+  if(goSearch)
+    query = extract_params message
+    if (query != '-1')
+      queryAPI = createAPIQuery query
+      response = sendRequestToJSON queryAPI
+    else
+      response = Hash["code" => "-1"]
+    end
+
+    if($LogToConsole || $LogToFile)
+      log(message,response)
+    end
+
+  else
+    response = Hash["code" => "999"]  
+  end
+  sendResponseToChannel(message, response)
+end
+
+def createAPIQuery(query)
     params = {
       'key' => $GOOGLECONF['APIKey'],
       'cx' =>  $GOOGLECONF['customSearchID'],
       'gl' => $GOOGLECONF['geoloc'],
       'hl' => $GOOGLECONF['UIlang'],
       'nums' => $GOOGLECONF['numberOfResults'],
-      'q' => extract_params(message)
+      'q' => query
     }
 
     uri = createUri($GOOGLECONF['url'], params)
-    respJSON = sendRequestToJSON(uri)
-  else
-    respJSON = Hash["code" => "-1"]
-  end
-
-  if($LogToConsole || $LogToFile)
-    log(message,respJSON)
-  end
-
-  sendResponseToChannel(message,respJSON)
 end
 
 def createUri(url, params)
