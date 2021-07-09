@@ -38,13 +38,13 @@ end
 bot.message do |message|
   if(bot.prefix == extract_prefix(message))
     if(extract_cmd(message).match($commands['google']))
-      if($LimitSearch != 0)
-        checkCountRequestLimitAndSearch(message)
-      else
-        googleSearch(message)
-      end
+      googleSearch message
     end
   end
+end
+
+bot.mention do |message|
+  googleSearch message
 end
 
 bot.run
