@@ -1,28 +1,6 @@
-def extract_prefix(message)
-  if(message.content.chr == $discord['prefix'])
-    message.content.chr
-  else
-    "@"
-  end
-end
-
-def extract_cmd(message)
-  if(extract_prefix(message) == $discord['prefix'])
-    message.content[1..][/(\w+)/, 0] # first word without prefix
-  else
-    "Mention"
-  end
-end
-
-def extract_params(message)
+def isThereAQuery(message)
   if(message.content.index(" "))
-    if(extract_prefix(message) == $discord['prefix'])
-      message.content[message.content.index(" ")+1..] # all after first space
-    else
-      words = message.content.split # get array of words from the message
-      mention =  words.find_index{|x| x.match /<@![0-9]{18}>/ } # get the index of the mention
-      words[mention+1..].join(' ') # extract the phrase after the mention
-    end
+    return true
   else
     '-1'
   end
@@ -32,18 +10,22 @@ def sendResponseToChannel(message, response)
   case response['code']
   when "200"
     message.channel.send_embed do |embed|
-      embed.title = response['items'][0]['title']
-      embed.url = response['items'][0]['link']
-      if(response['items'][0]['pagemap']['cse_thumbnail'])
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
+      if(extractArgs(message) && extractArgs(message).match(/-[a-z]*i[a-z]*/))
+        embed.image = Discordrb::Webhooks::EmbedImage.new(url: response['items'][0]['link'])
+      else
+        embed.title = response['items'][0]['title']
+        embed.url = response['items'][0]['link']
+        if(response['items'][0]['pagemap']['cse_thumbnail'])
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
+        end
+        embed.description = response['items'][0]['snippet']
       end
-      embed.description = response['items'][0]['snippet']
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
     end
   when "0"
     message.respond $__error_no_results_found
   when "-1"
-    message.respond $__error_no_query.gsub(/%[0-9]/, '%1' => extract_prefix(message) + extract_cmd(message))
+    message.respond $__error_no_query.gsub(/%[0-9]/, '%1' => extractPrefix(message) + extractCmd(message))
   when "999"
     message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRecentRequest))
   else
@@ -59,9 +41,9 @@ def log(message, response)
     link = response['items'][0]['link']
   end
 
-  query = extract_params(message) != '-1' ? extract_params(message) : ''
+  query = extractQuery(message) != '-1' ? extractQuery(message) : ''
 
-  line = "#{respTime}\t#{message.author.username}\t#{extract_cmd(message)}\t#{query}\t#{response['code']}\t#{link}"
+  line = "#{respTime}\t#{message.author.username}\t#{extractCmd(message)}\t#{query}\t#{response['code']}\t#{link}"
 
   if($LogToConsole)
     puts line

@@ -36,8 +36,8 @@ end
 
 
 bot.message do |message|
-  if(bot.prefix == extract_prefix(message))
-    if(extract_cmd(message).match($commands['google']))
+  if(bot.prefix == extractPrefix(message))
+    if(extractCmd(message).match($commands['google']))
       googleSearch message
     end
   end
