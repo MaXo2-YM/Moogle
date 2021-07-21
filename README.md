@@ -25,7 +25,7 @@ A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first r
 1. ~~Add Daily Count and stop~~
 1. ~~Add Multilingual support~~
 1. ~~Add Mention response~~
-1. Add Google Images
+1. ~~Add Google Images~~
 1. Add `!youtube` command
 1. Add `!help` command
 1. Add `!wiki` command
@@ -118,7 +118,9 @@ For now, you'll also have to edit `./conf/APIGoogle.conf` to change the `geoloc`
 
 It send the first result of a google search to the channel with Title, Description (when available), Thumbnail (when available) and direct Link.
 
-In the future, there will be options for Google Images, SafeSearch, and more.
+##### Options
+> Usage: `!google -<option> <search>`
+- `i`: perform an image search
 
 #### `Mention <search>`
 Same as `!google`, but it will respond to direct mention (to add an "Ok Moogle" vibe)
