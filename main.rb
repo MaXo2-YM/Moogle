@@ -24,13 +24,13 @@ bot.ready do |event|
   bot.watching= "!google <search>"
 
   if($LogToConsole)
-    puts "[   Date    -   Time  ]\tUser\tCommand\tRequest\t\t\t\tStatus\tlink"
+    puts "[   Date    -   Time  ]\tUser\tCommand\tOptions\tRequest\t\t\t\tStatus\tlink"
   end
 
   if($LogToFile)
     now = Time.new.strftime("%Y-%m-%d_%H-%M-%S")
     $logfile = File.open("./log/moogle_#{now}.log", "w")
-    File.write($logfile, "[   Date    -   Time  ]\tUser\tCommand\tRequest\t\t\t\tStatus\tlink\n", mode: "a")
+    File.write($logfile, "[   Date    -   Time  ]\tUser\tCommand\tOptions\tRequest\t\t\t\tStatus\tlink\n", mode: "a")
   end
 end
 
