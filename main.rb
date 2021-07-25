@@ -1,7 +1,5 @@
 require 'discordrb'
-require_relative 'google'
-require_relative 'helpers'
-require_relative 'count'
+require_relative './commands/google'
 load './conf/app.conf'
 load './conf/discord.conf' # $discord const
 load './conf/cmd.conf' # $commands const
