@@ -19,16 +19,16 @@ def sendRequestToJSON(uri)
   end
 
   respJSON = JSON.parse(response.body)
-  respJSON["code"] = response.code
-  respJSON["message"] = response.message
+  respJSON['code'] = response.code
+  respJSON['message'] = response.message
 
   if (respJSON['kind'].match(/youtube.*/))
-    if(respJSON["code"] == "200" && respJSON['pageInfo']['totalResults'] == 0)
-      respJSON["code"] = "0"
+    if(respJSON['code'] == '200' && respJSON['pageInfo']['totalResults'] == 0)
+      respJSON['code'] = '0'
     end
   else
-    if(respJSON["code"] == "200" && respJSON['searchInformation']['totalResults'] == '0')
-      respJSON["code"] = "0"
+    if(respJSON['code'] == '200' && respJSON['searchInformation']['totalResults'] == '0')
+      respJSON['code'] = '0'
     end
   end
   respJSON
