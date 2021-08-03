@@ -23,7 +23,7 @@ def sendRequestToJSON(uri)
   respJSON["message"] = response.message
 
   if (respJSON['kind'].match(/youtube.*/))
-    if(respJSON["code"] == "200" && respJSON['pageInfo']['totalResults'] == '0')
+    if(respJSON["code"] == "200" && respJSON['pageInfo']['totalResults'] == 0)
       respJSON["code"] = "0"
     end
   else
