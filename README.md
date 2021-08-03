@@ -128,8 +128,10 @@ Same as `!google`, but it will respond to direct mention (to add an "Ok Moogle" 
 #### `!youtube <search>`
 >alias: `!yt` (casse insensitive)
 
-It will send the first result of a YouTube search to the channel with Title, Description, Thumbnail, YouTube Channel, direct Link and maybe and embedded video player (I don't know yet how it works)
-> **YET TO BE IMPLEMENTED**
+It send the first video of a YouTube search as a link (and Discord generate the embed message by himself).
+For now `discordrb` doesn't allow us to send an embeded video directly (but a link to youtube generate an embeded video automatically). In the futur, if `discordrb` add this feature, I will add more informations to the embed message (such as publication date, number of views, etc).
+
+Next step is to add some options to the command such as "search a channel", "able safesearch", "video publied before/after date", "add a random number (with definition) to the query"
 
 #### `!wiki <search>`
 >alias: `!wk` (casse insensitive)
