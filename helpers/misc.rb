@@ -9,18 +9,22 @@ end
 def sendResponseToChannel(message, response)
   case response['code']
   when "200"
-    message.channel.send_embed do |embed|
-      if(extractArgs(message) && extractArgs(message).match(/-[a-z]*i[a-z]*/))
-        embed.image = Discordrb::Webhooks::EmbedImage.new(url: response['items'][0]['link'])
-      else
-        embed.title = response['items'][0]['title']
-        embed.url = response['items'][0]['link']
-        if(response['items'][0]['pagemap']['cse_thumbnail'])
-          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
+    if(extractCmd(message).match($commands['youtube']))
+      message.respond $YOUTUBECONF['urlVideo'] + response['items'][0]['id']['videoId']
+    else
+      message.channel.send_embed do |embed|
+        if(extractArgs(message) && extractArgs(message).match(/-[a-z]*i[a-z]*/))
+          embed.image = Discordrb::Webhooks::EmbedImage.new(url: response['items'][0]['link'])
+        else
+          embed.title = response['items'][0]['title']
+          embed.url = response['items'][0]['link']
+          if(response['items'][0]['pagemap']['cse_thumbnail'])
+            embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
+          end
+          embed.description = response['items'][0]['snippet']
         end
-        embed.description = response['items'][0]['snippet']
+        embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
       end
-      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
     end
   when "0"
     message.respond $__error_no_results_found

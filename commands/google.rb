@@ -15,7 +15,7 @@ def googleSearch(message)
 
   if(goSearch)
     if (isThereAQuery(message))
-      queryAPI = createAPIQuery message
+      queryAPI = createGoogleAPIQuery message
       response = sendRequestToJSON queryAPI
     else
       response = Hash["code" => "-1"]
@@ -31,7 +31,7 @@ def googleSearch(message)
   sendResponseToChannel(message, response)
 end
 
-def createAPIQuery(message)
+def createGoogleAPIQuery(message)
     params = {
       'key' => $GOOGLECONF['APIKey'],
       'cx' =>  $GOOGLECONF['customSearchID'],

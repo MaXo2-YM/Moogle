@@ -1,5 +1,6 @@
 require 'discordrb'
 require_relative './commands/google'
+require_relative './commands/youtube'
 load './conf/app.conf'
 load './conf/discord.conf' # $discord const
 load './conf/cmd.conf' # $commands const
@@ -37,6 +38,8 @@ bot.message do |message|
   if(bot.prefix == extractPrefix(message))
     if(extractCmd(message).match($commands['google']))
       googleSearch message
+    elsif(extractCmd(message).match($commands['youtube']))
+      youtubeSearch message
     end
   end
 end

@@ -3,7 +3,11 @@ def log(message, response)
 
   link = "null"
   if (response["code"] == "200")
-    link = response['items'][0]['link']
+    if(extractCmd(message).match($commands['youtube']))
+      link = $YOUTUBECONF['urlVideo'] + response['items'][0]['id']['videoId']
+    else
+      link = response['items'][0]['link']
+    end
   end
 
   query = isThereAQuery(message) != '-1' ? extractQuery(message) : ''
