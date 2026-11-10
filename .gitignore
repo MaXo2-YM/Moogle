@@ -1,6 +1,6 @@
 Gemfile.lock
 .vscode/*
-conf/APIGoogle.conf
+conf/tavily.conf
 conf/discord.conf
 log/*
 count

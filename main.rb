@@ -1,5 +1,5 @@
 require 'discordrb'
-require_relative 'google'
+require_relative 'tavily'
 require_relative 'helpers'
 require_relative 'count'
 load './conf/app.conf'
@@ -38,13 +38,13 @@ end
 bot.message do |message|
   if(bot.prefix == extractPrefix(message))
     if(extractCmd(message).match($commands['google']))
-      googleSearch message
+      tavilySearch message
     end
   end
 end
 
 bot.mention do |message|
-  googleSearch message
+  tavilySearch message
 end
 
 bot.run

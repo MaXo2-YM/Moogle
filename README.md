@@ -1,8 +1,9 @@
 # Moogle
 
-A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first result of a google search) using `discordrb`
+A Ruby discord bot to use as "I'm feeling lucky" (Display the first result of a web search) using `discordrb` and the [Tavily](https://tavily.com) search API
 
 ## Index
+- [Why not Google anymore ?](#why-not-google-anymore-)
 - [RoadMap](#roadmap)
 - [Dependencies](#dependencies)
 	-  [Before coding](#before-coding)
@@ -20,12 +21,18 @@ A Ruby discord bot to use as "I'm feeling lucky" for Google (Display the first r
 		- [`!steam <search>`](#steam-search)
 		- [`!help`](#help)
 
+## Why not Google anymore ?
+Moogle used to query the [Google Custom Search JSON API](https://developers.google.com/custom-search/v1/overview). Google closed it to new customers, removed access from existing projects (the bot started to answer `403 Forbidden` with `This project does not have the access to Custom Search JSON API.`) and shuts it down for good on January 1, 2027. Its official successors are either limited to a list of websites (Vertex AI Search) or reserved to partners (Web Search Service API), so Moogle now uses Tavily.
+
+The Google version is still in the history: see commit `4b237a5` (`google.rb` and `conf/APIGoogle.conf`) if Google ever reopens a public web search API.
+
 ## RoadMap
 1. ~~Add Error and log management~~
 1. ~~Add Daily Count and stop~~
 1. ~~Add Multilingual support~~
 1. ~~Add Mention response~~
 1. ~~Add Google Images~~
+1. ~~Replace Google Custom Search with Tavily~~
 1. Add `!youtube` command
 1. Add `!help` command
 1. Add `!wiki` command
@@ -38,10 +45,9 @@ See [Project](https://github.com/MaXo2-YM/Moogle/projects/1).
 
 ## Dependencies
 ### Before coding
-You'll need 3 things before you even get started:
+You'll need 2 things before you even get started:
 - a [Discord App](https://discord.com/developers/applications) (and a Bot) (you'll get a **token**)
-- a [Google Programmable Search Engine](https://programmablesearchengine.google.com) (Make sure to add `www.google.com` as website and to check "Search the entire web") (you'll get a **Search Engine ID**)
-- a [Google API App](https://console.cloud.google.com) with the [Custom Search API](https://console.cloud.google.com/apis/library/customsearch.googleapis.com) (see their [documentation](https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list)) (you'll get and **API Key**)
+- a [Tavily](https://app.tavily.com) account (free, no credit card needed) (see their [documentation](https://docs.tavily.com/documentation/api-reference/endpoint/search)) (you'll get an **API Key**, starting with `tvly-`)
 
 ### Starting to code
 - [Ruby](http://www.ruby-lang.org) (`2.7.3`) (For now because I was not sure if `discordrb` worked wit Ruby `3.x` but I will certainly update to `3.x` soon)
@@ -53,28 +59,27 @@ You'll need 3 things before you even get started:
 2. Install dependencies with `$ bundle install`
 **or** `$ gem install discordrb`
 3. Set the tokens and keys:
-- `APIKey` in `./conf/APIGoogle.conf`
-- `customSearchID` in `./conf/APIGoogle.conf`
+- `APIKey` in `./conf/tavily.conf`
 - `token` in `./conf/discord.conf`
 4. Run with `$ ruby main.rb`
 
 ## Features
 ### Daily Count
 #### Why is there a Daily Count of Searches ?
-When you installed the Custom Search API to your Google API app, you may have noticed that the Custom Search API will charge you above 100 requests a day (then $0,005 per request).
+Tavily's free plan gives 1,000 API credits a month (a basic search costs 1 credit, see their [pricing](https://www.tavily.com/pricing)). Above that, searches fail until next month, or you have to pay.
 
-A hundred request a day is a lot of request for a small servers, but if the bot feel usefull to your users -or you have a medium-to-big community- you maybe exceed this threshold and will need to pay.
+A thousand searches a month is a lot for a small server, but if the bot feel usefull to your users -or you have a medium-to-big community- you maybe exceed this threshold.
 
-Since I'm doing it for fun and don't want to be charged because of some spamming troll, I caped the utilisation of `!google` to 100 request a day.
+Since I'm doing it for fun and don't want some spamming troll to burn the whole month in one evening, the utilisation of `!google` is capped to a number of requests a day. Set it to `30` to never go above the free plan.
 
 #### How does it work ?
-Daily count lock is enabled by default, if you want to uncap google search, you can :
+Daily count lock is enabled by default, if you want to uncap the search, you can :
 
 - use the option `--uncap` (or `-uc` to be coupled with other options) when you launch directly the bot
 > Ex : `$ ruby main.rb -v`
 - edit `./conf/app.conf` and put the `$LimitSearch` constant to `0` (default: `100`).
 
-You also can put it to whatever number you feel acceptable if you already pay for a Google API App or if your Discord server generate money and you don't mind to paying for this service but don't want to exceed a certain amount.
+You also can put it to whatever number you feel acceptable if you already pay for a Tavily plan or if your Discord server generate money and you don't mind to paying for this service but don't want to exceed a certain amount.
 
 ### Logs
 You can choose to log all requests and responses either to the console, to a file or both. It will be display as
@@ -110,17 +115,17 @@ In the file `./conf/app.conf` you'll find a global variable named `$Language` th
 
 > But wait, there's more !
 
-For now, you'll also have to edit `./conf/APIGoogle.conf` to change the `geoloc` (see [doc](https://developers.google.com/custom-search/docs/xml_results_appendices?hl=fr#countryCodes)) and `UIlang` (see [doc](https://developers.google.com/custom-search/docs/xml_results_appendices?hl=fr#interfaceLanguages)) parameters to match your language too. In the future, theses parameters will be determined straight from your locale. And in another future, this will be an optional parameter send with the request by the user !
+For now, you'll also have to edit `./conf/tavily.conf` to change the `country` parameter (the country name in english and lowercase, like `france`, see [doc](https://docs.tavily.com/documentation/api-reference/endpoint/search)) to boost the results from your country. In the future, this parameter will be determined straight from your locale. And in another future, this will be an optional parameter send with the request by the user !
 
 ### Commands
 #### `!google <search>`
 > aliases: `!moogle`, `!gougle`, `!gl`, `!ml` (all casse insensitive)
 
-It send the first result of a google search to the channel with Title, Description (when available), Thumbnail (when available) and direct Link.
+It send the first result of a web search to the channel with Title, Description (when available) and direct Link. The command keeps its name: nobody says "let me tavily that for you".
 
 ##### Options
 > Usage: `!google -<option> <search>`
-- `i`: perform an image search
+- `i`: send the first image found for the search
 
 #### `Mention <search>`
 Same as `!google`, but it will respond to direct mention (to add an "Ok Moogle" vibe)
