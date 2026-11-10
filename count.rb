@@ -12,11 +12,8 @@ def countRecentRequest
   countFile = File.open("count", "r")
     now = Time.new
     countRequests = countFile.readlines.map(&:chomp)
-    countRequests.each_with_index do |line, i|
-      secondes = now - Time.new(*line.split('.'))
-      if(secondes / 60 / 60 > 24)
-        countRequests.slice!(i)
-      end
+    countRequests.reject! do |line|
+      line.empty? || (now - Time.new(*line.split('.'))) / 60 / 60 > 24
     end
     countFile.close
     

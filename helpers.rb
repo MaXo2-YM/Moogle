@@ -1,5 +1,5 @@
 def isThereAQuery(message)
-  message.content.index(" ") != nil
+  !extractQuery(message).empty?
 end
 
 def isImageSearch(message)
