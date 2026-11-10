@@ -2,3 +2,4 @@ $LogToConsole = false
 $LogToFile = false
 $LimitSearch = 100
 $Language = "en_EN"
+$HealthCheckHours = 24 # a real search every 24 h (1 Tavily credit) keeps the Discord status up to date, 0 to disable

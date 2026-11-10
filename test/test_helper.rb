@@ -37,7 +37,20 @@ BOT_ID = 855558221945896980
 Embed = Struct.new(:title, :url, :description, :image, :footer)
 Author = Struct.new(:username)
 Profile = Struct.new(:id)
-Bot = Struct.new(:profile)
+
+# Records the statuses the bot would show on Discord
+class FakeBot
+  attr_reader :profile, :statuses
+
+  def initialize
+    @profile = Profile.new(BOT_ID)
+    @statuses = []
+  end
+
+  def update_status(status, activity, *_rest)
+    @statuses << [status, activity]
+  end
+end
 
 # What the bot sent back: embeds and plain answers
 class FakeChannel
@@ -83,7 +96,7 @@ class FakeMessage
   end
 
   def bot
-    Bot.new(Profile.new(BOT_ID))
+    @bot ||= FakeBot.new
   end
 end
 
@@ -125,6 +138,8 @@ end
 
 class MoogleTest < Minitest::Test
   def setup
+    $searchHealthy = true
+    $HealthCheckHours = nil
     FileUtils.rm_f('count')
     $LimitSearch = 30
     $LogToConsole = false

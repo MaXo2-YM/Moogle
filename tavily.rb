@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 
 require_relative 'extractors'
+require_relative 'health'
 
 load './conf/tavily.conf' # $TAVILYCONF const
 
@@ -32,6 +33,7 @@ def tavilySearch(message)
     response = Hash["code" => "999"]
   end
   sendResponseToChannel(message, response)
+  updateSearchHealth(message.bot, response)
 end
 
 # Adult results only where Discord allows them: channels marked NSFW and their threads. Everywhere else, direct messages included, Tavily filters them out.

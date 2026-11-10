@@ -16,6 +16,7 @@ A Ruby discord bot to use as "I'm feeling lucky" (Display the first result of a 
 - [Features](#features)
 	- [Daily Count](#daily-count)
 	- [Adult content filter](#adult-content-filter)
+	- [Discord status](#discord-status)
 	- [Logs](#logs)
 	- [Multilingual](#multilingual)
 	- [Commands](#commands)
@@ -111,6 +112,11 @@ Adult results (pages and images) are only sent in channels marked as NSFW in Dis
 To filter adult results everywhere, even in NSFW channels, put `safeSearch` to `'always'` in `./conf/tavily.conf` (default: `'auto'`).
 
 The filter is Tavily's: it works like a search engine safe search, it blocks a lot but can't be guaranteed to block everything.
+
+### Discord status
+The bot's status shows whether the search works: online and "Watching !google <search>" when it does, Do Not Disturb (red) and "Watching ⚠ search down" after a failed Tavily call (refused key, exhausted credits, Tavily or network down). It goes back to normal after the next successful search. The daily count limit and commands without query don't count as failures.
+
+So that the status doesn't wait for a user to find the failure, the bot also runs a real search every 24 hours, outside the daily count. It costs 1 Tavily credit a day (about 30 of the 1,000 free monthly credits). Change the period with `$HealthCheckHours` in `./conf/app.conf`, or put it to `0` to disable it.
 
 ### Logs
 You can choose to log all requests and responses either to the console, to a file or both. It will be display as
