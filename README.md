@@ -9,6 +9,7 @@ A Ruby discord bot to use as "I'm feeling lucky" (Display the first result of a 
 	-  [Before coding](#before-coding)
 	- [Starting to code](#starting-to-code)
 - [Installation](#installation)
+- [Tests](#tests)
 - [Features](#features)
 	- [Daily Count](#daily-count)
 	- [Logs](#logs)
@@ -65,6 +66,11 @@ You'll need 2 things before you even get started:
 5. Run with `$ ruby main.rb`
 
 `conf/app.conf`, `conf/discord.conf` and `conf/tavily.conf` are ignored by git: your token and keys can't be committed by mistake. Only the `.example` files are versioned, update them when you add a setting.
+
+## Tests
+Run them with `$ rake test` (Minitest and Rake come with Ruby, nothing to install).
+
+They don't need Discord nor a Tavily key: messages are fake, Tavily answers are canned, and they run in a temporary copy built from the `.example` files, so your config and your daily count are never touched. `main.rb` (the connection to Discord) is the only file they don't cover.
 
 ## Features
 ### Daily Count
