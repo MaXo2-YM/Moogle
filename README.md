@@ -71,7 +71,7 @@ You'll need 2 things before you even get started:
 `conf/app.conf`, `conf/discord.conf` and `conf/tavily.conf` are ignored by git: your token and keys can't be committed by mistake. Only the `.example` files are versioned, update them when you add a setting.
 
 ### Run as a service
-On a Linux server, `deploy/moogle.service` runs the bot as a systemd user service: it starts at boot and restarts 10 seconds after a crash. It expects the repository in `~/Moogle` and Ruby from rbenv, edit `ExecStart` otherwise.
+On a Linux server, `deploy/moogle.service` runs the bot as a systemd user service: it starts at boot, restarts 10 seconds after a crash, and writes its console output to `./log/console.log`. It expects the repository in `~/Moogle` and Ruby from rbenv (systemd 240 or newer), edit the paths otherwise.
 
 1. Let your user's services run without an open session: `$ loginctl enable-linger` (or `$ sudo loginctl enable-linger <user>` if your system asks for it)
 2. Install and start it:
@@ -79,7 +79,7 @@ On a Linux server, `deploy/moogle.service` runs the bot as a systemd user servic
 $ systemctl --user link ~/Moogle/deploy/moogle.service
 $ systemctl --user enable --now moogle
 ```
-3. Then `$ systemctl --user status moogle`, `$ systemctl --user restart moogle` after a pull (plus `$ systemctl --user daemon-reload` first if the pull changed `moogle.service`), and `$ journalctl --user -u moogle -f` for the console output.
+3. Then `$ systemctl --user status moogle`, `$ systemctl --user restart moogle` after a pull (plus `$ systemctl --user daemon-reload` first if the pull changed `moogle.service`), and `$ tail -f ~/Moogle/log/console.log` for the console output.
 
 ## Tests
 Run them with `$ rake test` (Minitest and Rake come with Ruby, nothing to install).

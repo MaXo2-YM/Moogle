@@ -8,6 +8,9 @@ WorkingDirectory=%h/Moogle
 # rbenv's Ruby, update the version with the Ruby upgrade
 ExecStart=%h/.rbenv/versions/2.7.3/bin/ruby main.rb
 Environment=LANG=C.UTF-8
+# Not the journal: on some systems (Debian 10...) users can't read their services' journal
+StandardOutput=append:%h/Moogle/log/console.log
+StandardError=append:%h/Moogle/log/console.log
 Restart=always
 RestartSec=10
 
