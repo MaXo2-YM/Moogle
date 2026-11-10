@@ -116,7 +116,10 @@ To filter adult results everywhere, even in NSFW channels, put `safeSearch` to `
 The filter is Tavily's: it works like a search engine safe search, it blocks a lot but can't be guaranteed to block everything.
 
 ### Discord status
-The bot's status shows whether the search works: online and "Watching !google <search>" when it does, Do Not Disturb (red) and "Watching ⚠ search down" after a failed Tavily call (refused key, exhausted credits, Tavily or network down). It goes back to normal after the next successful search. The daily count limit and commands without query don't count as failures.
+The bot's status shows whether a search can be made:
+- online (green) and "Watching !google <search>" when it can
+- Idle (orange) and "Watching ⏳ out of searches until <date>" from the last search allowed by the [daily count](#daily-count) until the oldest search of the day is 24 hours old: it goes back to green by itself at that time
+- Do Not Disturb (red) and "Watching ⚠ search down" after a failed Tavily call (refused key, exhausted credits, Tavily or network down), until the next successful search. It wins over orange.
 
 So that the status doesn't wait for a user to find the failure, the bot also runs a real search every 24 hours, outside the daily count. It costs 1 Tavily credit a day (about 30 of the 1,000 free monthly credits). Change the period with `$HealthCheckHours` in `./conf/app.conf`, or put it to `0` to disable it.
 

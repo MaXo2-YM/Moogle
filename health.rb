@@ -1,25 +1,54 @@
-# The bot's Discord status follows the search: red with a warning after a failed Tavily call, back to normal after the next successful one
+# The bot's Discord status tells whether a search can be made: red after a failed Tavily call until the next successful one, orange while the daily count is full, green otherwise
 $searchHealthy = true
+$shownStatus = nil
 
-def showStatus(bot)
-  if($searchHealthy)
-    bot.update_status(:online, $__status_ok, nil, 0, false, 3) # 3: "Watching"
+def isLimitReached
+  $LimitSearch != 0 && countRecentRequest.length >= $LimitSearch
+end
+
+def currentStatus
+  if(!$searchHealthy)
+    [:dnd, $__status_search_down]
+  elsif(isLimitReached)
+    [:idle, $__status_limited.gsub('%1', getNextRequestTime(countRecentRequest))]
   else
-    bot.update_status(:dnd, $__status_search_down, nil, 0, false, 3)
+    [:online, $__status_ok]
   end
 end
 
-# Discord only gets the status when it changes
-def updateSearchHealth(bot, response)
-  if(["-1", "999"].include?(response['code'])) # no query or daily limit: Tavily wasn't called
+# Discord only gets the status when it changes, or on every (re)connection with force
+def showStatus(bot, force: false)
+  status = currentStatus
+  if(!force && status == $shownStatus)
     return
   end
 
-  healthy = ["200", "0"].include?(response['code'])
-  if(healthy != $searchHealthy)
-    $searchHealthy = healthy
-    showStatus(bot)
+  $shownStatus = status
+  bot.update_status(status[0], status[1], nil, 0, false, 3) # 3: "Watching"
+  if(status[0] == :idle)
+    scheduleStatusRefresh(bot)
   end
+end
+
+# Back to green on its own when the oldest search of the day leaves the 24 h window, without waiting for someone to try
+def scheduleStatusRefresh(bot)
+  $statusRefresh&.kill
+  nextRequest = Time.new(*countRecentRequest[0].split('.')) + 86400
+  $statusRefresh = Thread.new do
+    sleep([nextRequest - Time.now, 0].max + 1)
+    begin
+      showStatus(bot)
+    rescue StandardError => e # e.g. disconnected from Discord: the next reconnection shows it
+      puts "status refresh failed: #{e.class}: #{e.message}"
+    end
+  end
+end
+
+def updateSearchHealth(bot, response)
+  if(!["-1", "999"].include?(response['code'])) # no query or daily limit: Tavily wasn't called
+    $searchHealthy = ["200", "0"].include?(response['code'])
+  end
+  showStatus(bot)
 end
 
 # A real search, outside the daily count, so the status doesn't wait for a user to find the failure

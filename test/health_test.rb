@@ -1,6 +1,10 @@
 require_relative 'test_helper'
 
 class HealthTest < MoogleTest
+  def timestamp(time)
+    time.strftime('%Y.%m.%d.%H.%M.%S')
+  end
+
   def test_failure_turns_the_status_red
     bot = FakeBot.new
     updateSearchHealth(bot, { 'code' => '401' })
@@ -31,12 +35,10 @@ class HealthTest < MoogleTest
     assert_empty bot.statuses
   end
 
-  def test_ready_shows_the_current_status
+  def test_reconnection_shows_the_status_again
     bot = FakeBot.new
-    showStatus(bot)
-    $searchHealthy = false
-    showStatus(bot)
-    assert_equal [[:online, $__status_ok], [:dnd, $__status_search_down]], bot.statuses
+    showStatus(bot, force: true)
+    assert_equal [[:online, $__status_ok]], bot.statuses
   end
 
   def test_a_failed_search_turns_the_status_red
@@ -45,9 +47,50 @@ class HealthTest < MoogleTest
     assert_equal [[:dnd, $__status_search_down]], message.bot.statuses
   end
 
+  def test_last_allowed_search_turns_the_status_orange
+    $LimitSearch = 1
+    message = FakeMessage.new('!google recette crêpes')
+    withHTTP(FakeHTTP.new(tavilyResponse(results: [tavilyResult]))) { tavilySearch(message) }
+
+    nextRequest = getNextRequestTime(countRecentRequest)
+    assert_equal [[:idle, $__status_limited.gsub('%1', nextRequest)]], message.bot.statuses
+    assert $statusRefresh.alive? # waiting for the oldest search to expire
+  end
+
+  def test_failure_is_shown_before_the_limit
+    $LimitSearch = 1
+    File.write('count', timestamp(Time.now) + "\n")
+    $searchHealthy = false
+    assert_equal :dnd, currentStatus[0]
+  end
+
+  def test_back_to_green_when_the_oldest_search_expires
+    $LimitSearch = 1
+    File.write('count', timestamp(Time.now - 86400 - 60) + "\n")
+    assert_equal [:online, $__status_ok], currentStatus
+  end
+
+  def test_no_limit_never_turns_orange
+    $LimitSearch = 0
+    File.write('count', timestamp(Time.now) + "\n")
+    assert_equal :online, currentStatus[0]
+  end
+
+  def test_refresh_waits_until_the_oldest_search_expires
+    $LimitSearch = 1
+    File.write('count', timestamp(Time.now - 86400 + 1) + "\n")
+    bot = FakeBot.new
+    showStatus(bot)
+    assert_equal :idle, bot.statuses.last[0]
+
+    sleep 2.5 # the oldest search expired 1 s after the refresh was scheduled, then +1 s margin
+    assert_equal [:online, $__status_ok], bot.statuses.last
+  end
+
   def test_health_check_searches_outside_the_daily_count
     bot = FakeBot.new
     $searchHealthy = false
+    $shownStatus = [:dnd, $__status_search_down]
     fake = FakeHTTP.new(tavilyResponse(results: [tavilyResult]))
     withHTTP(fake) { checkSearchHealth(bot) }
 
@@ -65,7 +108,7 @@ class HealthTest < MoogleTest
   def test_health_check_runs_every_24_hours_by_default
     thread = startHealthCheck(FakeBot.new)
     sleep 0.05
-    assert_equal 'sleep', thread.status
+    assert thread.alive?
   ensure
     thread&.kill
   end

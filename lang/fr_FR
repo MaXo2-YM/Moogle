@@ -5,3 +5,4 @@ $__date_format_cap_limit = '%d/%m/%Y à %H:%M:%S'
 $__error_no_query = "Mec, faut que tu me demande un truc, hein..\n> Syntaxe : `%1 <recherche>`"
 $__status_ok = "!google <recherche>"
 $__status_search_down = "⚠ recherche en panne"
+$__status_limited = "⏳ plus de recherche avant le %1"

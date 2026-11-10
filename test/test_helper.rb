@@ -139,6 +139,8 @@ end
 class MoogleTest < Minitest::Test
   def setup
     $searchHealthy = true
+    $shownStatus = [:online, $__status_ok] # as shown when the bot connected
+    $statusRefresh&.kill
     $HealthCheckHours = nil
     FileUtils.rm_f('count')
     $LimitSearch = 30
