@@ -12,6 +12,32 @@ rescue URI::InvalidURIError
   url
 end
 
+# Sends a request to a search API, its JSON answer gets the HTTP "code" and "message"
+def requestJSON(uri, request)
+  req_options = {
+    use_ssl: uri.scheme == 'https',
+    open_timeout: 5,
+    read_timeout: 15
+  }
+
+  begin
+    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      http.request(request)
+    end
+  rescue StandardError => e # timeout, DNS, TLS...: answer like an API error instead of failing silently
+    return Hash["code" => e.class.name, "message" => e.message]
+  end
+
+  begin
+    respJSON = JSON.parse(response.body)
+  rescue JSON::ParserError
+    respJSON = Hash.new
+  end
+  respJSON["code"] = response.code
+  respJSON["message"] = response.message
+  respJSON
+end
+
 def sendResponseToChannel(message, response)
   case response['code']
   when "200"

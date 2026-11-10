@@ -75,28 +75,7 @@ def sendRequestToJSON(uri, body)
   request['Authorization'] = "Bearer #{$TAVILYCONF['APIKey']}"
   request.body = body.to_json
 
-  req_options = {
-    use_ssl: uri.scheme == 'https',
-    open_timeout: 5,
-    read_timeout: 15
-  }
-
-  begin
-    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-      http.request(request)
-    end
-  rescue StandardError => e # timeout, DNS, TLS...: answer like an API error instead of failing silently
-    return Hash["code" => e.class.name, "message" => e.message]
-  end
-
-  begin
-    respJSON = JSON.parse(response.body)
-  rescue JSON::ParserError
-    respJSON = Hash.new
-  end
-  respJSON["code"] = response.code
-  respJSON["message"] = response.message
-
+  respJSON = requestJSON(uri, request)
   if(respJSON["code"] == "200" && respJSON['results'].to_a.empty?)
     respJSON["code"] = "0"
   end
