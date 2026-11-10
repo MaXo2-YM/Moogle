@@ -47,15 +47,98 @@ class YoutubeTest < MoogleTest
     assert_equal 'none', params(createYoutubeUri(nsfw))['safeSearch']
   end
 
-  def test_answers_the_plain_video_link
+  def detailsResponse(published: '2009-10-25T06:57:33Z', views: '1700000000', duration: 'PT3M33S', live: 'none', description: 'The official video for "Never Gonna Give You Up" by Rick Astley.')
+    statistics = views ? { 'viewCount' => views } : {}
+    item = {
+      'id' => 'dQw4w9WgXcQ',
+      'snippet' => { 'publishedAt' => published, 'description' => description, 'liveBroadcastContent' => live },
+      'statistics' => statistics,
+      'contentDetails' => { 'duration' => duration }
+    }
+    FakeResponse.new('200', 'OK', { 'items' => [item] }.to_json)
+  end
+
+  def test_answers_the_details_above_the_video_link
     message = FakeMessage.new('!youtube never gonna give you up')
-    fake = FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'))
+    fake = FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'), detailsResponse)
     withHTTP(fake) { youtubeSearch(message) }
 
-    assert_equal ['https://www.youtube.com/watch?v=dQw4w9WgXcQ'], message.answers
+    assert_equal ["📅 10/25/2009 · 👁 1.7B views · ⏱ 3:33\n> The official video for \"Never Gonna Give You Up\" by Rick Astley.\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ"], message.answers
     assert_empty message.channel.embeds
-    assert_kind_of Net::HTTP::Get, fake.requests.last
     assert_equal 1, File.readlines('count').length
+  end
+
+  def test_details_request_asks_for_the_found_video
+    fake = FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'), detailsResponse)
+    withHTTP(fake) { youtubeSearch(FakeMessage.new('!yt never gonna give you up')) }
+
+    assert_equal 2, fake.requests.length
+    path, query = fake.requests.last.path.split('?', 2)
+    assert_equal '/youtube/v3/videos', path
+    assert_equal 'dQw4w9WgXcQ', URI.decode_www_form(query).to_h['id']
+    assert_equal 'snippet,statistics,contentDetails', URI.decode_www_form(query).to_h['part']
+  end
+
+  def test_no_mention_can_ping
+    message = FakeMessage.new('!yt never gonna give you up')
+    withHTTP(FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'), detailsResponse(description: 'Hello @everyone'))) { youtubeSearch(message) }
+    assert_equal({ parse: [] }, message.respondOptions.last)
+  end
+
+  def test_link_alone_when_details_fail
+    message = FakeMessage.new('!yt never gonna give you up')
+    fake = FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'), FakeResponse.new('403', 'Forbidden', '{}'))
+    withHTTP(fake) { youtubeSearch(message) }
+    assert_equal ['https://www.youtube.com/watch?v=dQw4w9WgXcQ'], message.answers
+  end
+
+  def test_hidden_views_and_empty_description_are_left_out
+    response = { 'videoUrl' => 'https://www.youtube.com/watch?v=x', 'videoDetails' => JSON.parse(detailsResponse(views: nil, description: '').body)['items'][0] }
+    assert_equal "📅 10/25/2009 · ⏱ 3:33\nhttps://www.youtube.com/watch?v=x", formatVideoMessage(response)
+  end
+
+  def test_live_instead_of_duration
+    response = { 'videoUrl' => 'https://www.youtube.com/watch?v=x', 'videoDetails' => JSON.parse(detailsResponse(duration: 'P0D', live: 'live', description: '').body)['items'][0] }
+    assert_equal "📅 10/25/2009 · 👁 1.7B views · 🔴 live\nhttps://www.youtube.com/watch?v=x", formatVideoMessage(response)
+  end
+
+  def test_format_count
+    { 999 => '999', 1234 => '1.2K', 12345 => '12K', 1_000_000 => '1M', 3_400_000 => '3.4M', 1_700_000_000 => '1.7B' }.each do |count, text|
+      assert_equal text, formatCount(count), count
+    end
+  end
+
+  def test_format_count_in_french
+    load './lang/fr_FR'
+    { 345 => '345', 12345 => '12 k', 3_400_000 => '3,4 M de', 1_700_000_000 => '1,7 Md de' }.each do |count, text|
+      assert_equal text, formatCount(count), count
+    end
+    assert_equal '1,7 Md de vues', $__views.gsub('%1', formatCount(1_700_000_000))
+  ensure
+    load './lang/en_EN'
+  end
+
+  def test_format_duration
+    { 'PT3M33S' => '3:33', 'PT45S' => '0:45', 'PT1H2M3S' => '1:02:03', 'PT10M' => '10:00', 'P1DT2H' => '26:00:00' }.each do |iso, text|
+      assert_equal text, formatDuration(iso), iso
+    end
+    assert_nil formatDuration('P0D')
+    assert_nil formatDuration(nil)
+    assert_nil formatDuration('3:33')
+  end
+
+  def test_description_without_links_and_hashtags
+    assert_equal 'Stream it now:', cleanDescription("Stream it now: https://lnk.to/rick #RickAstley #NeverGonnaGiveYouUp")
+  end
+
+  def test_description_markdown_is_escaped
+    assert_equal '\*bold\* \_it\_ \`code\` \> quote', cleanDescription('*bold* _it_ `code` > quote')
+  end
+
+  def test_long_description_is_cut_on_a_word
+    text = cleanDescription('word ' * 100)
+    assert text.length <= 201
+    assert text.end_with?('word…')
   end
 
   def test_no_video_answers_no_results

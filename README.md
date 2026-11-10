@@ -54,7 +54,7 @@ See [Project](https://github.com/MaXo2-YM/Moogle/projects/1).
 You'll need 2 things before you even get started, and a third one for `!youtube`:
 - a [Discord App](https://discord.com/developers/applications) (and a Bot) (you'll get a **token**)
 - a [Tavily](https://app.tavily.com) account (free, no credit card needed) (see their [documentation](https://docs.tavily.com/documentation/api-reference/endpoint/search)) (you'll get an **API Key**, starting with `tvly-`)
-- optional, for `!youtube`: a [Google Cloud](https://console.cloud.google.com) project with [YouTube Data API v3](https://console.cloud.google.com/apis/library/youtube.googleapis.com) enabled (you'll get an **API Key**: if it has API restrictions, YouTube Data API v3 must be in them). The free quota is 10,000 units a day and a search costs 100: about 100 searches a day
+- optional, for `!youtube`: a [Google Cloud](https://console.cloud.google.com) project with [YouTube Data API v3](https://console.cloud.google.com/apis/library/youtube.googleapis.com) enabled (you'll get an **API Key**: if it has API restrictions, YouTube Data API v3 must be in them). The free quota is 10,000 units a day and a `!youtube` costs 101 (100 for the search, 1 for the video details): about 99 searches a day
 
 ### Starting to code
 - [Ruby](http://www.ruby-lang.org) `3.4` (see `.ruby-version`, `discordrb` 3.8 needs 3.2 or newer). Building it with rbenv needs libyaml (`libyaml-dev` on Debian): without root access, build libyaml in your home and pass `RUBY_CONFIGURE_OPTS="--with-libyaml-dir=$HOME/.local/libyaml"` to `rbenv install`
@@ -179,7 +179,13 @@ Same as `!google`, but it will respond to direct mention (to add an "Ok Moogle" 
 #### `!youtube <search>`
 >alias: `!yt` (casse insensitive)
 
-It sends the link of the first video of a YouTube search, and Discord turns it into its usual preview with the video player. A bot can't put a video player in its own embed messages (Discord ignores their video field), the plain link is the only way to get it.
+It sends the link of the first video of a YouTube search, and Discord turns it into its usual preview with the video player. Above the link, it adds what Discord's preview doesn't show: publication date, views, duration (or "live"), and the beginning of the description without its links and hashtags.
+
+> 📅 25/10/2009 · 👁 1,8 Md de vues · ⏱ 3:34
+> > The official video for "Never Gonna Give You Up" by Rick Astley…
+> https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+Why not a nicer embed? A bot can't put a video player in its own embed messages (Discord ignores their video field), and when a bot's message has an embed Discord doesn't add the link's preview either: the plain link with text above is the only way to get the player. The description can't ping anyone, even if it contains `@everyone`.
 
 By default it only looks for videos that can play outside YouTube, so the player works in Discord: set `embeddableOnly` to `false` in `./conf/youtube.conf` to look for any video. `regionCode` (ex: `'FR'`) and `relevanceLanguage` (ex: `'fr'`) get results closer to your users. Adult videos follow the [adult content filter](#adult-content-filter) (YouTube's `safeSearch` is `strict` outside NSFW channels), and the searches count in the [daily count](#daily-count) with `!google`.
 
