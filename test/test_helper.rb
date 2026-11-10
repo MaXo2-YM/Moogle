@@ -2,7 +2,6 @@ require 'minitest/autorun'
 require 'minitest/mock'
 require 'fileutils'
 require 'tmpdir'
-require 'ostruct'
 
 # The bot reads its config, its language and its count file from the current directory:
 # tests run in a temporary copy built from the .example files, never on the real ones.
@@ -20,8 +19,8 @@ Minitest.after_run { FileUtils.rm_rf(SANDBOX) }
 # discordrb isn't needed to test the bot logic, only the embed classes it builds
 module Discordrb
   module Webhooks
-    class EmbedImage < OpenStruct; end
-    class EmbedFooter < OpenStruct; end
+    EmbedImage = Struct.new(:url, keyword_init: true)
+    EmbedFooter = Struct.new(:text, keyword_init: true)
   end
 end
 
@@ -35,6 +34,12 @@ require_relative '../count'
 
 BOT_ID = 855558221945896980
 
+# Plain structs rather than OpenStruct, which recent Rubies no longer ship by default
+Embed = Struct.new(:title, :url, :description, :image, :footer)
+Author = Struct.new(:username)
+Profile = Struct.new(:id)
+Bot = Struct.new(:profile)
+
 # What the bot sent back: embeds and plain answers
 class FakeChannel
   attr_reader :embeds
@@ -44,7 +49,7 @@ class FakeChannel
   end
 
   def send_embed
-    embed = OpenStruct.new
+    embed = Embed.new
     yield embed
     @embeds << embed
   end
@@ -64,11 +69,11 @@ class FakeMessage
   end
 
   def author
-    OpenStruct.new(username: 'tester')
+    Author.new('tester')
   end
 
   def bot
-    OpenStruct.new(profile: OpenStruct.new(id: BOT_ID))
+    Bot.new(Profile.new(BOT_ID))
   end
 end
 
