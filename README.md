@@ -1,5 +1,7 @@
 # Moogle
 
+[![Tests](https://github.com/MaXo2-YM/Moogle/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/MaXo2-YM/Moogle/actions/workflows/tests.yml)
+
 A Ruby discord bot to use as "I'm feeling lucky" (Display the first result of a web search) using `discordrb` and the [Tavily](https://tavily.com) search API
 
 ## Index
