@@ -68,7 +68,9 @@ You'll need 2 things before you even get started, and a third one for `!youtube`
 4. Set the tokens and keys:
 - `APIKey` in `./conf/tavily.conf`
 - `token` in `./conf/discord.conf`
-- `APIKey` in `./conf/youtube.conf` for `!youtube`, or delete that file: the bot then runs without the command
+- `APIKey` in `./conf/youtube.conf` for `!youtube`
+
+A command whose config file is missing or still has the example key answers that its service isn't set up, with a link to this README, instead of failing.
 5. In the [Discord Developer Portal](https://discord.com/developers/applications), enable **Message Content Intent** in your bot's settings: without it, Discord sends the server messages empty and the bot only answers mentions
 6. Run with `$ bundle exec ruby main.rb`
 

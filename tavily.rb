@@ -5,9 +5,16 @@ require 'json'
 require_relative 'extractors'
 require_relative 'health'
 
-load './conf/tavily.conf' # $TAVILYCONF const
+# Without its config file the bot still starts, and tells how to set the search up
+if(File.exist?('./conf/tavily.conf'))
+  load './conf/tavily.conf' # $TAVILYCONF const
+end
 
 def tavilySearch(message)
+  if(!isConfigured($TAVILYCONF))
+    return answerNotConfigured(message, 'before-coding')
+  end
+
   response = runSearch(message) do
     tavilyResponse = sendRequestToJSON(URI($TAVILYCONF['url']), createAPIBody(message))
     if(tavilyResponse['code'] == "200" && isImageSearch(message) && tavilyResponse['images'].to_a.empty?)

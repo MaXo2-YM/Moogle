@@ -104,12 +104,4 @@ class YoutubeTest < MoogleTest
     %w[youtube YouTube yt YT].each { |command| assert_match $commands['youtube'], command }
     %w[ytb you yt2 youtuber].each { |command| refute_match $commands['youtube'], command }
   end
-
-  def test_disabled_without_config
-    config = $YOUTUBECONF
-    $YOUTUBECONF = nil
-    refute isYoutubeEnabled
-  ensure
-    $YOUTUBECONF = config
-  end
 end

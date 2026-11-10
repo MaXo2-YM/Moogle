@@ -39,7 +39,7 @@ bot.message do |message|
   if(bot.prefix == extractPrefix(message))
     if(extractCmd(message).match($commands['google']))
       tavilySearch message
-    elsif(isYoutubeEnabled && extractCmd(message).match($commands['youtube']))
+    elsif(extractCmd(message).match($commands['youtube']))
       youtubeSearch message
     end
   end

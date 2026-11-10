@@ -12,6 +12,18 @@ rescue URI::InvalidURIError
   url
 end
 
+README_URL = 'https://github.com/MaXo2-YM/Moogle'
+
+# A service is configured when its config file was loaded and its API key isn't the .example placeholder
+def isConfigured(conf)
+  !conf.nil? && !conf['APIKey'].to_s.empty? && !conf['APIKey'].start_with?('YOUR-')
+end
+
+# The link between < > so Discord doesn't add a preview of the README
+def answerNotConfigured(message, readmeAnchor)
+  message.respond $__error_not_configured.gsub('%1', "<#{README_URL}##{readmeAnchor}>")
+end
+
 # Daily count, missing query, log and answer, around the API request the block makes
 def runSearch(message)
   goSearch = true
