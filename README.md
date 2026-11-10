@@ -109,7 +109,7 @@ To log all requests and responses directly to the console,  you can:
 - edit `./conf/app.conf` and put the `$LogToConsole` constant to `true` (default: `false`). this way, it will automatically log to consol when you launch the bot without parameters
 
 #### Log to file
-Logs will be kept in `./log` in a file named `moogle_YYYY-MM-DD_HH-MM-SS.log` with the time you launch the bot
+Logs will be kept in `./log`, one file a day named `moogle_YYYY-MM-DD.log`: restarting the bot or reconnecting to Discord adds to the file of the day
 to activate le log in file, you can:
 - use the option `--log` (or `-l` to be coupled with other options) when you launch directly the bot
 	> Ex : `$ ruby main.rb -l`

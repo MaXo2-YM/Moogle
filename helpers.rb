@@ -37,6 +37,13 @@ def sendResponseToChannel(message, response)
   end
 end
 
+LOG_HEADER = "[   Date    -   Time  ]\tUser\tCommand\tOptions\tRequest\t\t\t\tStatus\tlink"
+
+# One file a day: reconnections to Discord no longer create a new file each
+def logFileName
+  "./log/moogle_#{Time.new.strftime('%Y-%m-%d')}.log"
+end
+
 def log(message, response)
   respTime = Time.new.strftime("[%d/%m/%Y - %H:%M:%S]")
 
@@ -55,7 +62,10 @@ def log(message, response)
   end
 
   if($LogToFile)
-    File.write($logfile, line + "\n", mode: 'a')
+    if(!File.exist?(logFileName))
+      File.write(logFileName, LOG_HEADER + "\n")
+    end
+    File.write(logFileName, line + "\n", mode: 'a')
   end
 
 end
