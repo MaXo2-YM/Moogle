@@ -1,0 +1,15 @@
+# systemd user service: see "Run as a service" in the README
+[Unit]
+Description=Moogle Discord bot
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/Moogle
+# rbenv's Ruby, update the version with the Ruby upgrade
+ExecStart=%h/.rbenv/versions/2.7.3/bin/ruby main.rb
+Environment=LANG=C.UTF-8
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
