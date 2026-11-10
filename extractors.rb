@@ -25,7 +25,7 @@ end
   
 def extractQuery(message)
   if(extractPrefix(message) == $discord['prefix'])
-    fullQuery = message.content[message.content.index(" ")+1..] # all after first space
+    fullQuery = message.content.split(' ', 2)[1].to_s # all after first space
 
     justQuery = Array.new
     fullQuery.split(' ') do |word|
@@ -37,7 +37,11 @@ def extractQuery(message)
 
   else
     words = message.content.split # get array of words from the message
-    mention =  words.find_index{|x| x.match /<@![0-9]{18}>/ } # get the index of the mention
+    # Discord dropped the "!" of nickname mentions, both forms still exist in old clients
+    mention = words.find_index{|x| x.match /<@!?#{message.bot.profile.id}>/ } # get the index of the bot mention
+    if(mention.nil?)
+      return ''
+    end
     words[mention+1..].join(' ') # extract the phrase after the mention
   end
 end
