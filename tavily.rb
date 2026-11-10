@@ -34,11 +34,25 @@ def tavilySearch(message)
   sendResponseToChannel(message, response)
 end
 
+# Adult results only where Discord allows them: channels marked NSFW and their threads. Everywhere else, direct messages included, Tavily filters them out.
+def isSafeSearch(message)
+  if($TAVILYCONF['safeSearch'] == 'always')
+    return true
+  end
+
+  channel = message.channel
+  if(channel.thread?) # threads follow their parent channel's setting
+    channel = channel.parent
+  end
+  !(channel && channel.nsfw?)
+end
+
 def createAPIBody(message)
   body = {
     'query' => extractQuery(message),
     'max_results' => $TAVILYCONF['numberOfResults'],
-    'exclude_domains' => $TAVILYCONF['excludeDomains']
+    'exclude_domains' => $TAVILYCONF['excludeDomains'],
+    'safe_search' => isSafeSearch(message)
   }
 
   if(!$TAVILYCONF['country'].to_s.empty?)

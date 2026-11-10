@@ -41,10 +41,21 @@ Bot = Struct.new(:profile)
 
 # What the bot sent back: embeds and plain answers
 class FakeChannel
-  attr_reader :embeds
+  attr_reader :embeds, :parent
 
-  def initialize
+  def initialize(nsfw: false, thread: false, parent: nil)
     @embeds = []
+    @nsfw = nsfw
+    @thread = thread
+    @parent = parent
+  end
+
+  def nsfw?
+    @nsfw
+  end
+
+  def thread?
+    @thread
   end
 
   def send_embed
@@ -57,9 +68,9 @@ end
 class FakeMessage
   attr_reader :content, :channel, :answers
 
-  def initialize(content)
+  def initialize(content, channel: FakeChannel.new)
     @content = content
-    @channel = FakeChannel.new
+    @channel = channel
     @answers = []
   end
 
@@ -119,6 +130,7 @@ class MoogleTest < Minitest::Test
     $LogToConsole = false
     $LogToFile = false
     $TAVILYCONF['country'] = ''
+    $TAVILYCONF['safeSearch'] = 'auto'
   end
 
   # Runs the block with Net::HTTP.start answered by fake (by hand: Minitest 6 moved minitest/mock to another gem)

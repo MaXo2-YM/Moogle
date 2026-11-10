@@ -15,6 +15,7 @@ A Ruby discord bot to use as "I'm feeling lucky" (Display the first result of a 
 - [Tests](#tests)
 - [Features](#features)
 	- [Daily Count](#daily-count)
+	- [Adult content filter](#adult-content-filter)
 	- [Logs](#logs)
 	- [Multilingual](#multilingual)
 	- [Commands](#commands)
@@ -103,6 +104,13 @@ Daily count lock is enabled by default, if you want to uncap the search, you can
 - edit `./conf/app.conf` and put the `$LimitSearch` constant to `0` (default: `100`).
 
 You also can put it to whatever number you feel acceptable if you already pay for a Tavily plan or if your Discord server generate money and you don't mind to paying for this service but don't want to exceed a certain amount.
+
+### Adult content filter
+Adult results (pages and images) are only sent in channels marked as NSFW in Discord (Edit Channel > Age-Restricted Channel), and in the threads of these channels. Everywhere else, direct messages included, the search uses Tavily's `safe_search`, which filters them out. That's Discord's own rule for bots, and only members allowed to manage channels can mark one NSFW: there is nothing to set up in the bot.
+
+To filter adult results everywhere, even in NSFW channels, put `safeSearch` to `'always'` in `./conf/tavily.conf` (default: `'auto'`).
+
+The filter is Tavily's: it works like a search engine safe search, it blocks a lot but can't be guaranteed to block everything.
 
 ### Logs
 You can choose to log all requests and responses either to the console, to a file or both. It will be display as
