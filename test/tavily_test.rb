@@ -19,6 +19,38 @@ class TavilyTest < MoogleTest
     assert_equal true, createAPIBody(FakeMessage.new('!google -i chat roux'))['include_images']
   end
 
+  def safeSearchIn(channel)
+    createAPIBody(FakeMessage.new('!google bongo cat', channel: channel))['safe_search']
+  end
+
+  def test_safe_search_in_a_normal_channel_or_direct_messages
+    assert_equal true, safeSearchIn(FakeChannel.new)
+  end
+
+  def test_no_safe_search_in_a_nsfw_channel
+    assert_equal false, safeSearchIn(FakeChannel.new(nsfw: true))
+  end
+
+  def test_threads_follow_their_parent_channel
+    assert_equal false, safeSearchIn(FakeChannel.new(thread: true, parent: FakeChannel.new(nsfw: true)))
+    assert_equal true, safeSearchIn(FakeChannel.new(thread: true, parent: FakeChannel.new))
+  end
+
+  def test_safe_search_when_the_thread_parent_is_unknown
+    assert_equal true, safeSearchIn(FakeChannel.new(thread: true, parent: nil))
+  end
+
+  def test_safe_search_always_even_in_a_nsfw_channel
+    $TAVILYCONF['safeSearch'] = 'always'
+    assert_equal true, safeSearchIn(FakeChannel.new(nsfw: true))
+  end
+
+  def test_safe_search_without_the_setting_is_auto
+    $TAVILYCONF.delete('safeSearch')
+    assert_equal true, safeSearchIn(FakeChannel.new)
+    assert_equal false, safeSearchIn(FakeChannel.new(nsfw: true))
+  end
+
   def test_request_sends_the_key_as_bearer
     fake = FakeHTTP.new(tavilyResponse(results: [tavilyResult]))
     withHTTP(fake) { sendRequestToJSON(URI($TAVILYCONF['url']), { 'query' => 'test' }) }

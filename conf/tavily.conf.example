@@ -3,5 +3,6 @@ $TAVILYCONF = {
   'country' => '', #Boost results from a country, in english and lowercase (ex: 'france'), empty for none
   'excludeDomains' => ['tavily.com'], #Tavily sometimes puts its own company sheets first
   'numberOfResults' => 1,
+  'safeSearch' => 'auto', #'auto': adult results only in channels marked NSFW in Discord, 'always': filtered everywhere
   'url' => 'https://api.tavily.com/search'
 }
