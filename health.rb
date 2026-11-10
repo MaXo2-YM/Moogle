@@ -62,7 +62,7 @@ end
 
 def startHealthCheck(bot)
   hours = $HealthCheckHours.nil? ? 24 : $HealthCheckHours
-  if(hours <= 0)
+  if(hours <= 0 || !isConfigured($TAVILYCONF)) # without Tavily the check would only turn the status red
     return
   end
 

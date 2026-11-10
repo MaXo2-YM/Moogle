@@ -147,6 +147,8 @@ class MoogleTest < Minitest::Test
     $LimitSearch = 30
     $LogToConsole = false
     $LogToFile = false
+    $TAVILYCONF['APIKey'] = 'tvly-test-key' # the .example placeholders count as not configured
+    $YOUTUBECONF['APIKey'] = 'AIza-test-key'
     $TAVILYCONF['country'] = ''
     $TAVILYCONF['safeSearch'] = 'auto'
   end

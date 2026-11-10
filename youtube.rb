@@ -5,16 +5,16 @@ require 'json'
 require_relative 'extractors'
 require_relative 'health'
 
-# Optional command: without its config file the bot runs without it
+# Optional command: without its config file the bot still starts, and tells how to set it up
 if(File.exist?('./conf/youtube.conf'))
   load './conf/youtube.conf' # $YOUTUBECONF const
 end
 
-def isYoutubeEnabled
-  !$YOUTUBECONF.nil?
-end
-
 def youtubeSearch(message)
+  if(!isConfigured($YOUTUBECONF))
+    return answerNotConfigured(message, 'youtube-search')
+  end
+
   runSearch(message) do
     sendYoutubeRequest(createYoutubeUri(message))
   end

@@ -6,3 +6,4 @@ $__error_no_query = "Mec, faut que tu me demande un truc, hein..\n> Syntaxe : `%
 $__status_ok = "!google <recherche>"
 $__status_search_down = "⚠ recherche en panne"
 $__status_limited = "⏳ plus de recherche avant le %1"
+$__error_not_configured = "J'peux pas ! Dis au teubé qui m'a installé de configurer ce service :\n%1"
