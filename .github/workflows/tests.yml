@@ -4,6 +4,8 @@ on:
   push:
     branches: [master]
   pull_request:
+  schedule:
+    - cron: '0 6 * * 1' # every Monday: catches a new Ruby or runner image breaking the tests without any commit
 
 jobs:
   test:

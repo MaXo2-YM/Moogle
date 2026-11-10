@@ -3,3 +3,6 @@ $__error_api = "There's a motherfucking bug in the motherfucking API.\nError cod
 $__error_cap_limit_exceeded = 'Sorry bruh, I\'ll not be able to perform search before %1 :('
 $__date_format_cap_limit = '%m/%d/%Y at %H:%M:%S'
 $__error_no_query = "Dude, you need to ask me something, you know ?\n> Syntax : `%1 <search>`"
+$__status_ok = "!google <search>"
+$__status_search_down = "⚠ search down"
+$__status_limited = "⏳ out of searches until %1"

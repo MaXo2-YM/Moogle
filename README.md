@@ -16,6 +16,7 @@ A Ruby discord bot to use as "I'm feeling lucky" (Display the first result of a 
 - [Features](#features)
 	- [Daily Count](#daily-count)
 	- [Adult content filter](#adult-content-filter)
+	- [Discord status](#discord-status)
 	- [Logs](#logs)
 	- [Multilingual](#multilingual)
 	- [Commands](#commands)
@@ -87,6 +88,8 @@ Run them with `$ rake test` (Minitest and Rake come with Ruby, nothing to instal
 
 They don't need Discord nor a Tavily key: messages are fake, Tavily answers are canned, and they run in a temporary copy built from the `.example` files, so your config and your daily count are never touched. `main.rb` (the connection to Discord) is the only file they don't cover.
 
+GitHub Actions runs them on every pull request, on every push to `master` and every Monday, on Ruby 3.4 and 4.0: the badge at the top of this page turns red when they fail. GitHub disables scheduled runs after 60 days without activity on the repository, re-enable them from the Actions tab.
+
 ## Features
 ### Daily Count
 #### Why is there a Daily Count of Searches ?
@@ -111,6 +114,14 @@ Adult results (pages and images) are only sent in channels marked as NSFW in Dis
 To filter adult results everywhere, even in NSFW channels, put `safeSearch` to `'always'` in `./conf/tavily.conf` (default: `'auto'`).
 
 The filter is Tavily's: it works like a search engine safe search, it blocks a lot but can't be guaranteed to block everything.
+
+### Discord status
+The bot's status shows whether a search can be made:
+- online (green) and "Watching !google <search>" when it can
+- Idle (orange) and "Watching ⏳ out of searches until <date>" from the last search allowed by the [daily count](#daily-count) until the oldest search of the day is 24 hours old: it goes back to green by itself at that time
+- Do Not Disturb (red) and "Watching ⚠ search down" after a failed Tavily call (refused key, exhausted credits, Tavily or network down), until the next successful search. It wins over orange.
+
+So that the status doesn't wait for a user to find the failure, the bot also runs a real search every 24 hours, outside the daily count. It costs 1 Tavily credit a day (about 30 of the 1,000 free monthly credits). Change the period with `$HealthCheckHours` in `./conf/app.conf`, or put it to `0` to disable it.
 
 ### Logs
 You can choose to log all requests and responses either to the console, to a file or both. It will be display as

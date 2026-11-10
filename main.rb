@@ -29,8 +29,9 @@ intents = Discordrb::INTENTS.values_at(:servers, :server_messages, :direct_messa
 
 bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix'], intents: intents
 bot.ready do |event| # on every (re)connection to Discord
-  bot.watching= "!google <search>"
+  showStatus(bot, force: true)
 end
+startHealthCheck(bot)
 
 
 bot.message do |message|

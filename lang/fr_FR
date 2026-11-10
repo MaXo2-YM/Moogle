@@ -3,3 +3,6 @@ $__error_api = "y\'a un Bug API la putain de ta grand mère.\n> Code retour : `%
 $__error_cap_limit_exceeded = "Désolé bro, je ne pourrais plus faire de recherche avant le %1 :("
 $__date_format_cap_limit = '%d/%m/%Y à %H:%M:%S'
 $__error_no_query = "Mec, faut que tu me demande un truc, hein..\n> Syntaxe : `%1 <recherche>`"
+$__status_ok = "!google <recherche>"
+$__status_search_down = "⚠ recherche en panne"
+$__status_limited = "⏳ plus de recherche avant le %1"
