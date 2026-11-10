@@ -1,26 +1,30 @@
 def isThereAQuery(message)
-  if(message.content.index(" "))
-    return true
-  else
-    '-1'
-  end
+  message.content.index(" ") != nil
+end
+
+def isImageSearch(message)
+  extractArgs(message) && extractArgs(message).match(/-[a-z]*i[a-z]*/)
+end
+
+def displayLink(url)
+  URI(url).host || url
+rescue URI::InvalidURIError
+  url
 end
 
 def sendResponseToChannel(message, response)
   case response['code']
   when "200"
     message.channel.send_embed do |embed|
-      if(extractArgs(message) && extractArgs(message).match(/-[a-z]*i[a-z]*/))
-        embed.image = Discordrb::Webhooks::EmbedImage.new(url: response['items'][0]['link'])
+      if(isImageSearch(message))
+        embed.image = Discordrb::Webhooks::EmbedImage.new(url: response['images'][0])
+        embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: displayLink(response['images'][0]))
       else
-        embed.title = response['items'][0]['title']
-        embed.url = response['items'][0]['link']
-        if(response['items'][0]['pagemap']['cse_thumbnail'])
-          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['items'][0]['pagemap']['cse_thumbnail'][0]['src'])
-        end
-        embed.description = response['items'][0]['snippet']
+        embed.title = response['results'][0]['title']
+        embed.url = response['results'][0]['url']
+        embed.description = cleanSnippet(response['results'][0]['content'])
+        embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: displayLink(response['results'][0]['url']))
       end
-      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: response['items'][0]['displayLink'])
     end
   when "0"
     message.respond $__error_no_results_found
@@ -29,7 +33,7 @@ def sendResponseToChannel(message, response)
   when "999"
     message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRecentRequest))
   else
-    message.respond $__error_api_google.gsub(/%[0-9]/, '%1' => response['code'], '%2' => response['message'])
+    message.respond $__error_api.gsub(/%[0-9]/, '%1' => response['code'], '%2' => response['message'])
   end
 end
 
@@ -38,11 +42,11 @@ def log(message, response)
 
   link = "null"
   if (response["code"] == "200")
-    link = response['items'][0]['link']
+    link = isImageSearch(message) ? response['images'][0] : response['results'][0]['url']
   end
 
-  query = isThereAQuery(message) != '-1' ? extractQuery(message) : ''
-  options = isThereAQuery(message) != '-1' ? extractArgs(message) ? extractArgs(message) : '' : ''
+  query = isThereAQuery(message) ? extractQuery(message) : ''
+  options = isThereAQuery(message) ? extractArgs(message) ? extractArgs(message) : '' : ''
 
   line = "#{respTime}\t#{message.author.username}\t#{extractCmd(message)}\t#{options}\t#{query}\t#{response['code']}\t#{link}"
 
