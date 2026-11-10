@@ -5,7 +5,8 @@ After=network-online.target
 
 [Service]
 WorkingDirectory=%h/Moogle
-# rbenv's Ruby (the one of .ruby-version), with the gems of Gemfile.lock
+# rbenv's Ruby (the one of .ruby-version), with the gems of Gemfile.lock. `bundle exec ruby` looks for ruby in the PATH: without rbenv's first, it runs the system one.
+Environment=PATH=%h/.rbenv/versions/3.4.12/bin:/usr/local/bin:/usr/bin:/bin
 ExecStart=%h/.rbenv/versions/3.4.12/bin/bundle exec ruby main.rb
 Environment=LANG=C.UTF-8
 # Not the journal: on some systems (Debian 10...) users can't read their services' journal
