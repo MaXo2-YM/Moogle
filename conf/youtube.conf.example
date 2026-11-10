@@ -1,0 +1,8 @@
+$YOUTUBECONF = {
+  'APIKey' => 'YOUR-YOUTUBE-API-KEY-HERE', #A Google Cloud API key allowed to use YouTube Data API v3
+  'regionCode' => '', #Results for a country, ISO 3166-1 alpha-2 code (ex: 'FR'), empty for none
+  'relevanceLanguage' => '', #Results in a language first, ISO 639-1 code (ex: 'fr'), empty for none
+  'embeddableOnly' => true, #Only videos that can play inside Discord
+  'url' => 'https://www.googleapis.com/youtube/v3/search',
+  'urlVideo' => 'https://www.youtube.com/watch?v='
+}

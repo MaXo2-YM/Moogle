@@ -1,6 +1,7 @@
 .vscode/*
 conf/app.conf
 conf/tavily.conf
+conf/youtube.conf
 conf/discord.conf
 log/*
 !log/.gitkeep

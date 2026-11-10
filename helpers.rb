@@ -67,6 +67,10 @@ end
 def sendResponseToChannel(message, response)
   case response['code']
   when "200"
+    if(response['videoUrl'])
+      return message.respond(response['videoUrl'])
+    end
+
     message.channel.send_embed do |embed|
       if(isImageSearch(message))
         embed.image = Discordrb::Webhooks::EmbedImage.new(url: response['images'][0])
@@ -101,7 +105,11 @@ def log(message, response)
 
   link = "null"
   if (response["code"] == "200")
-    link = isImageSearch(message) ? response['images'][0] : response['results'][0]['url']
+    if(response['videoUrl'])
+      link = response['videoUrl']
+    else
+      link = isImageSearch(message) ? response['images'][0] : response['results'][0]['url']
+    end
   end
 
   query = isThereAQuery(message) ? extractQuery(message) : ''

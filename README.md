@@ -39,7 +39,7 @@ The Google version is still in the history: see commit `4b237a5` (`google.rb` an
 1. ~~Add Mention response~~
 1. ~~Add Google Images~~
 1. ~~Replace Google Custom Search with Tavily~~
-1. Add `!youtube` command
+1. ~~Add `!youtube` command~~
 1. Add `!help` command
 1. Add `!wiki` command
 1. Add `!steam` command ?
@@ -51,9 +51,10 @@ See [Project](https://github.com/MaXo2-YM/Moogle/projects/1).
 
 ## Dependencies
 ### Before coding
-You'll need 2 things before you even get started:
+You'll need 2 things before you even get started, and a third one for `!youtube`:
 - a [Discord App](https://discord.com/developers/applications) (and a Bot) (you'll get a **token**)
 - a [Tavily](https://app.tavily.com) account (free, no credit card needed) (see their [documentation](https://docs.tavily.com/documentation/api-reference/endpoint/search)) (you'll get an **API Key**, starting with `tvly-`)
+- optional, for `!youtube`: a [Google Cloud](https://console.cloud.google.com) project with [YouTube Data API v3](https://console.cloud.google.com/apis/library/youtube.googleapis.com) enabled (you'll get an **API Key**: if it has API restrictions, YouTube Data API v3 must be in them). The free quota is 10,000 units a day and a search costs 100: about 100 searches a day
 
 ### Starting to code
 - [Ruby](http://www.ruby-lang.org) `3.4` (see `.ruby-version`, `discordrb` 3.8 needs 3.2 or newer). Building it with rbenv needs libyaml (`libyaml-dev` on Debian): without root access, build libyaml in your home and pass `RUBY_CONFIGURE_OPTS="--with-libyaml-dir=$HOME/.local/libyaml"` to `rbenv install`
@@ -67,6 +68,7 @@ You'll need 2 things before you even get started:
 4. Set the tokens and keys:
 - `APIKey` in `./conf/tavily.conf`
 - `token` in `./conf/discord.conf`
+- `APIKey` in `./conf/youtube.conf` for `!youtube`, or delete that file: the bot then runs without the command
 5. In the [Discord Developer Portal](https://discord.com/developers/applications), enable **Message Content Intent** in your bot's settings: without it, Discord sends the server messages empty and the bot only answers mentions
 6. Run with `$ bundle exec ruby main.rb`
 
@@ -175,8 +177,9 @@ Same as `!google`, but it will respond to direct mention (to add an "Ok Moogle" 
 #### `!youtube <search>`
 >alias: `!yt` (casse insensitive)
 
-It will send the first result of a YouTube search to the channel with Title, Description, Thumbnail, YouTube Channel, direct Link and maybe and embedded video player (I don't know yet how it works)
-> **YET TO BE IMPLEMENTED**
+It sends the link of the first video of a YouTube search, and Discord turns it into its usual preview with the video player. A bot can't put a video player in its own embed messages (Discord ignores their video field), the plain link is the only way to get it.
+
+By default it only looks for videos that can play outside YouTube, so the player works in Discord: set `embeddableOnly` to `false` in `./conf/youtube.conf` to look for any video. `regionCode` (ex: `'FR'`) and `relevanceLanguage` (ex: `'fr'`) get results closer to your users. Adult videos follow the [adult content filter](#adult-content-filter) (YouTube's `safeSearch` is `strict` outside NSFW channels), and the searches count in the [daily count](#daily-count) with `!google`.
 
 #### `!wiki <search>`
 >alias: `!wk` (casse insensitive)

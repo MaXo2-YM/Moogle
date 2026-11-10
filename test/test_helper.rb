@@ -28,6 +28,7 @@ load './conf/discord.conf'
 load './conf/cmd.conf'
 load './lang/en_EN'
 require_relative '../tavily'
+require_relative '../youtube'
 require_relative '../helpers'
 require_relative '../count'
 
