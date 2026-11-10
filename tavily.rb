@@ -8,31 +8,13 @@ require_relative 'health'
 load './conf/tavily.conf' # $TAVILYCONF const
 
 def tavilySearch(message)
-  goSearch = true
-
-  if($LimitSearch != 0 && isThereAQuery(message)) # a command without query doesn't cost a search
-    goSearch = checkCountRequestLimit(message)
-  end
-
-  if(goSearch)
-    if (isThereAQuery(message))
-      body = createAPIBody message
-      response = sendRequestToJSON(URI($TAVILYCONF['url']), body)
-      if(response['code'] == "200" && isImageSearch(message) && response['images'].to_a.empty?)
-        response['code'] = "0"
-      end
-    else
-      response = Hash["code" => "-1"]
+  response = runSearch(message) do
+    tavilyResponse = sendRequestToJSON(URI($TAVILYCONF['url']), createAPIBody(message))
+    if(tavilyResponse['code'] == "200" && isImageSearch(message) && tavilyResponse['images'].to_a.empty?)
+      tavilyResponse['code'] = "0"
     end
-
-    if($LogToConsole || $LogToFile)
-      log(message,response)
-    end
-
-  else
-    response = Hash["code" => "999"]
+    tavilyResponse
   end
-  sendResponseToChannel(message, response)
   updateSearchHealth(message.bot, response)
 end
 

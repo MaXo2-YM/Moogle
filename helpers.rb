@@ -12,6 +12,32 @@ rescue URI::InvalidURIError
   url
 end
 
+# Daily count, missing query, log and answer, around the API request the block makes
+def runSearch(message)
+  goSearch = true
+
+  if($LimitSearch != 0 && isThereAQuery(message)) # a command without query doesn't cost a search
+    goSearch = checkCountRequestLimit(message)
+  end
+
+  if(goSearch)
+    if (isThereAQuery(message))
+      response = yield
+    else
+      response = Hash["code" => "-1"]
+    end
+
+    if($LogToConsole || $LogToFile)
+      log(message,response)
+    end
+
+  else
+    response = Hash["code" => "999"]
+  end
+  sendResponseToChannel(message, response)
+  response
+end
+
 # Sends a request to a search API, its JSON answer gets the HTTP "code" and "message"
 def requestJSON(uri, request)
   req_options = {
