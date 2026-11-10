@@ -88,6 +88,8 @@ Run them with `$ rake test` (Minitest and Rake come with Ruby, nothing to instal
 
 They don't need Discord nor a Tavily key: messages are fake, Tavily answers are canned, and they run in a temporary copy built from the `.example` files, so your config and your daily count are never touched. `main.rb` (the connection to Discord) is the only file they don't cover.
 
+GitHub Actions runs them on every pull request, on every push to `master` and every Monday, on Ruby 3.4 and 4.0: the badge at the top of this page turns red when they fail. GitHub disables scheduled runs after 60 days without activity on the repository, re-enable them from the Actions tab.
+
 ## Features
 ### Daily Count
 #### Why is there a Daily Count of Searches ?
