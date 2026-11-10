@@ -9,7 +9,7 @@ load './conf/tavily.conf' # $TAVILYCONF const
 def tavilySearch(message)
   goSearch = true
 
-  if($LimitSearch != 0)
+  if($LimitSearch != 0 && isThereAQuery(message)) # a command without query doesn't cost a search
     goSearch = checkCountRequestLimit(message)
   end
 
