@@ -9,6 +9,10 @@ def checkCountRequestLimit(message)
 end
 
 def countRecentRequest
+  if(!File.exist?("count")) # created by the first request
+    return []
+  end
+
   countFile = File.open("count", "r")
     now = Time.new
     countRequests = countFile.readlines.map(&:chomp)

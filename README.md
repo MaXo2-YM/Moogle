@@ -58,10 +58,13 @@ You'll need 2 things before you even get started:
 1. Clone this repository
 2. Install dependencies with `$ bundle install`
 **or** `$ gem install discordrb`
-3. Set the tokens and keys:
+3. Create your config from the examples: `$ for f in conf/*.conf.example; do cp "$f" "${f%.example}"; done`
+4. Set the tokens and keys:
 - `APIKey` in `./conf/tavily.conf`
 - `token` in `./conf/discord.conf`
-4. Run with `$ ruby main.rb`
+5. Run with `$ ruby main.rb`
+
+`conf/app.conf`, `conf/discord.conf` and `conf/tavily.conf` are ignored by git: your token and keys can't be committed by mistake. Only the `.example` files are versioned, update them when you add a setting.
 
 ## Features
 ### Daily Count

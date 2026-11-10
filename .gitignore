@@ -1,6 +1,8 @@
 Gemfile.lock
 .vscode/*
+conf/app.conf
 conf/tavily.conf
 conf/discord.conf
 log/*
+!log/.gitkeep
 count
