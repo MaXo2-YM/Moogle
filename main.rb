@@ -19,19 +19,13 @@ for arg in ARGV
   end
 end
 
+if($LogToConsole)
+  puts LOG_HEADER
+end
+
 bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix']
-bot.ready do |event|
+bot.ready do |event| # on every (re)connection to Discord
   bot.watching= "!google <search>"
-
-  if($LogToConsole)
-    puts "[   Date    -   Time  ]\tUser\tCommand\tOptions\tRequest\t\t\t\tStatus\tlink"
-  end
-
-  if($LogToFile)
-    now = Time.new.strftime("%Y-%m-%d_%H-%M-%S")
-    $logfile = File.open("./log/moogle_#{now}.log", "w")
-    File.write($logfile, "[   Date    -   Time  ]\tUser\tCommand\tOptions\tRequest\t\t\t\tStatus\tlink\n", mode: "a")
-  end
 end
 
 
