@@ -1,5 +1,6 @@
 require 'discordrb'
 require_relative 'tavily'
+require_relative 'youtube'
 require_relative 'helpers'
 require_relative 'count'
 load './conf/app.conf'
@@ -38,6 +39,8 @@ bot.message do |message|
   if(bot.prefix == extractPrefix(message))
     if(extractCmd(message).match($commands['google']))
       tavilySearch message
+    elsif(isYoutubeEnabled && extractCmd(message).match($commands['youtube']))
+      youtubeSearch message
     end
   end
 end

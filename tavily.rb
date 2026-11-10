@@ -8,31 +8,13 @@ require_relative 'health'
 load './conf/tavily.conf' # $TAVILYCONF const
 
 def tavilySearch(message)
-  goSearch = true
-
-  if($LimitSearch != 0 && isThereAQuery(message)) # a command without query doesn't cost a search
-    goSearch = checkCountRequestLimit(message)
-  end
-
-  if(goSearch)
-    if (isThereAQuery(message))
-      body = createAPIBody message
-      response = sendRequestToJSON(URI($TAVILYCONF['url']), body)
-      if(response['code'] == "200" && isImageSearch(message) && response['images'].to_a.empty?)
-        response['code'] = "0"
-      end
-    else
-      response = Hash["code" => "-1"]
+  response = runSearch(message) do
+    tavilyResponse = sendRequestToJSON(URI($TAVILYCONF['url']), createAPIBody(message))
+    if(tavilyResponse['code'] == "200" && isImageSearch(message) && tavilyResponse['images'].to_a.empty?)
+      tavilyResponse['code'] = "0"
     end
-
-    if($LogToConsole || $LogToFile)
-      log(message,response)
-    end
-
-  else
-    response = Hash["code" => "999"]
+    tavilyResponse
   end
-  sendResponseToChannel(message, response)
   updateSearchHealth(message.bot, response)
 end
 
@@ -75,28 +57,7 @@ def sendRequestToJSON(uri, body)
   request['Authorization'] = "Bearer #{$TAVILYCONF['APIKey']}"
   request.body = body.to_json
 
-  req_options = {
-    use_ssl: uri.scheme == 'https',
-    open_timeout: 5,
-    read_timeout: 15
-  }
-
-  begin
-    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-      http.request(request)
-    end
-  rescue StandardError => e # timeout, DNS, TLS...: answer like an API error instead of failing silently
-    return Hash["code" => e.class.name, "message" => e.message]
-  end
-
-  begin
-    respJSON = JSON.parse(response.body)
-  rescue JSON::ParserError
-    respJSON = Hash.new
-  end
-  respJSON["code"] = response.code
-  respJSON["message"] = response.message
-
+  respJSON = requestJSON(uri, request)
   if(respJSON["code"] == "200" && respJSON['results'].to_a.empty?)
     respJSON["code"] = "0"
   end
