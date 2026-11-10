@@ -61,10 +61,16 @@ def sendRequestToJSON(uri, body)
 
   req_options = {
     use_ssl: uri.scheme == 'https',
+    open_timeout: 5,
+    read_timeout: 15
   }
 
-  response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-    http.request(request)
+  begin
+    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      http.request(request)
+    end
+  rescue StandardError => e # timeout, DNS, TLS...: answer like an API error instead of failing silently
+    return Hash["code" => e.class.name, "message" => e.message]
   end
 
   begin
