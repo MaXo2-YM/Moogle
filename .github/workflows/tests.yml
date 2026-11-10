@@ -11,8 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 2.7: the server's Ruby. 3.4: where the Ruby and discordrb upgrade will go.
-        ruby: ['2.7', '3.4']
+        # 3.4: the server's Ruby (.ruby-version). 4.0: the next one.
+        ruby: ['3.4', '4.0']
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1

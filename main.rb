@@ -23,7 +23,11 @@ if($LogToConsole)
   puts LOG_HEADER
 end
 
-bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix']
+# Gateway v9 only sends what the bot asks for. The default (:all) asks for privileged intents the bot doesn't need and Discord refuses the connection, and discordrb doesn't know MESSAGE_CONTENT (1 << 15), without which server messages arrive empty and `!google` never matches. It must also be enabled in the Developer Portal.
+MESSAGE_CONTENT_INTENT = 1 << 15
+intents = Discordrb::INTENTS.values_at(:servers, :server_messages, :direct_messages).reduce(:|) | MESSAGE_CONTENT_INTENT
+
+bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix'], intents: intents
 bot.ready do |event| # on every (re)connection to Discord
   bot.watching= "!google <search>"
 end

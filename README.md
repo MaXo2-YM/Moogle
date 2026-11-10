@@ -54,19 +54,19 @@ You'll need 2 things before you even get started:
 - a [Tavily](https://app.tavily.com) account (free, no credit card needed) (see their [documentation](https://docs.tavily.com/documentation/api-reference/endpoint/search)) (you'll get an **API Key**, starting with `tvly-`)
 
 ### Starting to code
-- [Ruby](http://www.ruby-lang.org) (`2.7.3`) (For now because I was not sure if `discordrb` worked wit Ruby `3.x` but I will certainly update to `3.x` soon)
+- [Ruby](http://www.ruby-lang.org) `3.4` (see `.ruby-version`, `discordrb` 3.8 needs 3.2 or newer). Building it with rbenv needs libyaml (`libyaml-dev` on Debian): without root access, build libyaml in your home and pass `RUBY_CONFIGURE_OPTS="--with-libyaml-dir=$HOME/.local/libyaml"` to `rbenv install`
 - git
 - `discordrb` gem (see their [documentation](https://github.com/shardlab/discordrb))
 
 ## Installation
 1. Clone this repository
-2. Install dependencies with `$ bundle install`
-**or** `$ gem install discordrb`
+2. Install dependencies with `$ bundle install` (the versions are locked in `Gemfile.lock`)
 3. Create your config from the examples: `$ for f in conf/*.conf.example; do cp "$f" "${f%.example}"; done`
 4. Set the tokens and keys:
 - `APIKey` in `./conf/tavily.conf`
 - `token` in `./conf/discord.conf`
-5. Run with `$ ruby main.rb`
+5. In the [Discord Developer Portal](https://discord.com/developers/applications), enable **Message Content Intent** in your bot's settings: without it, Discord sends the server messages empty and the bot only answers mentions
+6. Run with `$ bundle exec ruby main.rb`
 
 `conf/app.conf`, `conf/discord.conf` and `conf/tavily.conf` are ignored by git: your token and keys can't be committed by mistake. Only the `.example` files are versioned, update them when you add a setting.
 

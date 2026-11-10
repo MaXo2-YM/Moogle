@@ -5,8 +5,8 @@ After=network-online.target
 
 [Service]
 WorkingDirectory=%h/Moogle
-# rbenv's Ruby, update the version with the Ruby upgrade
-ExecStart=%h/.rbenv/versions/2.7.3/bin/ruby main.rb
+# rbenv's Ruby (the one of .ruby-version), with the gems of Gemfile.lock
+ExecStart=%h/.rbenv/versions/3.4.12/bin/bundle exec ruby main.rb
 Environment=LANG=C.UTF-8
 # Not the journal: on some systems (Debian 10...) users can't read their services' journal
 StandardOutput=append:%h/Moogle/log/console.log

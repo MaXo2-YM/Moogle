@@ -1,5 +1,4 @@
 require 'minitest/autorun'
-require 'minitest/mock'
 require 'fileutils'
 require 'tmpdir'
 
@@ -122,8 +121,12 @@ class MoogleTest < Minitest::Test
     $TAVILYCONF['country'] = ''
   end
 
-  # Runs the block with Net::HTTP.start answered by fake
-  def withHTTP(fake, &block)
-    Net::HTTP.stub(:start, fake.method(:start), &block)
+  # Runs the block with Net::HTTP.start answered by fake (by hand: Minitest 6 moved minitest/mock to another gem)
+  def withHTTP(fake)
+    original = Net::HTTP.method(:start)
+    Net::HTTP.define_singleton_method(:start) { |*args, &block| fake.start(*args, &block) }
+    yield
+  ensure
+    Net::HTTP.define_singleton_method(:start, original)
   end
 end
