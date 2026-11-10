@@ -14,9 +14,14 @@ def extractCmd(message)
   end
 end
   
+# Options are letters only, so "-10" or "-5°C" stay in the query
+def isOption(word)
+  word.match?(/^-[a-z]+$/)
+end
+
 def extractArgs(message)
   message.content.split(" ").each do |arg|
-    if(arg.match(/^-[a-z]*/))
+    if(isOption(arg))
       return arg
     end
   end
@@ -29,7 +34,7 @@ def extractQuery(message)
 
     justQuery = Array.new
     fullQuery.split(' ') do |word|
-      if(!word.match(/^-[a-z]*/))
+      if(!isOption(word))
         justQuery.push(word)
       end
     end
