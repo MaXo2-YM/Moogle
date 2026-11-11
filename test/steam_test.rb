@@ -74,9 +74,16 @@ class SteamTest < MoogleTest
     $Language = 'en_EN'
   end
 
-  def test_instant_gaming_referral_code
-    $STEAMCONF['instantGamingReferral'] = 'moogle'
-    assert_equal 'https://www.instant-gaming.com/en/search/?q=Hades&igr=moogle', instantGamingSearchUrl('Hades')
+  def test_instant_gaming_affiliate_code
+    $IGCONF = { 'affiliateCode' => 'maxo2' }
+    assert_equal 'https://www.instant-gaming.com/en/search/?q=Hades&igr=maxo2', instantGamingSearchUrl('Hades')
+  end
+
+  def test_no_affiliation_without_code
+    $IGCONF = { 'affiliateCode' => '' }
+    assert_equal 'https://www.instant-gaming.com/en/search/?q=Hades', instantGamingSearchUrl('Hades')
+    $IGCONF = {} # no ig.conf
+    assert_equal 'https://www.instant-gaming.com/en/search/?q=Hades', instantGamingSearchUrl('Hades')
   end
 
   def test_instant_gaming_link_can_be_removed

@@ -11,6 +11,12 @@ if(File.exist?('./conf/steam.conf'))
   load './conf/steam.conf' # $STEAMCONF const
 end
 
+# Optional: the Instant Gaming affiliate code of whoever runs the bot, added to the Instant Gaming links
+$IGCONF = {}
+if(File.exist?('./conf/ig.conf'))
+  load './conf/ig.conf' # $IGCONF const
+end
+
 STEAM_COUNT = 'count_steam'
 STEAM_STORE = 'https://store.steampowered.com'
 # Steam names its languages instead of using codes
@@ -114,8 +120,8 @@ end
 def instantGamingSearchUrl(name)
   path = steamLanguage == 'french' ? 'fr/rechercher' : 'en/search'
   params = { 'q' => name }
-  if(!$STEAMCONF['instantGamingReferral'].to_s.empty?)
-    params['igr'] = $STEAMCONF['instantGamingReferral'] # Instant Gaming's affiliate code
+  if(!$IGCONF['affiliateCode'].to_s.empty?) # no code, no affiliation
+    params['igr'] = $IGCONF['affiliateCode']
   end
   "https://www.instant-gaming.com/#{path}/?" + URI.encode_www_form(params)
 end

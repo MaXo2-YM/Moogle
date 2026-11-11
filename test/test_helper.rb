@@ -156,6 +156,7 @@ class MoogleTest < Minitest::Test
     $HealthCheckHours = nil
     FileUtils.rm_f([GOOGLE_COUNT, YOUTUBE_COUNT, WIKI_COUNT, STEAM_COUNT])
     $STEAMCONF = { 'country' => '', 'language' => '', 'dailyLimit' => 100 }
+    $IGCONF = {}
     $WIKICONF = { 'language' => '', 'fallbackLanguage' => 'en', 'dailyLimit' => 0 }
     $LimitSearch = nil
     $Uncapped = false

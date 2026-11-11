@@ -224,7 +224,11 @@ Prices and texts follow the bot's language (`fr_FR` gives prices in euros and Fr
 
 Steam has no official API to search its store: the bot uses the JSON endpoints of the store's own pages, public and keyless but undocumented, so Valve may change them without notice. They are rate limited, hence a default `dailyLimit` of `100` a day in `./conf/steam.conf`.
 
-The embed ends with a link to the game on [Instant Gaming](https://www.instant-gaming.com)'s search (in French for a French bot, in English otherwise): `instantGaming` to `false` in `./conf/steam.conf` removes it. If you're part of Instant Gaming's affiliate program, put your code (the `igr=` of your affiliate link) in `instantGamingReferral`: the link then carries it.
+The embed ends with a link to the game on [Instant Gaming](https://www.instant-gaming.com)'s search (in French for a French bot, in English otherwise): `instantGaming` to `false` in `./conf/steam.conf` removes it.
+
+If you're part of Instant Gaming's [affiliate program](https://www.instant-gaming.com/fr/partenariat/), copy `./conf/ig.conf.example` to `./conf/ig.conf` and put your code (the end of your link `https://www.instant-gaming.com/?igr=CODE`) in `affiliateCode`: the links then carry it. Without that file, or with an empty code, the links carry no affiliation.
+
+> The Moogle bot run by its author has an affiliate code: buying a game through its Instant Gaming links pays him 3% of the sale, at no cost for you.
 
 #### `!help`
 display all commands available and their descriptions
