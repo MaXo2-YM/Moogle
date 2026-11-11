@@ -27,7 +27,7 @@ end
 
 # Adult results only where Discord allows them: channels marked NSFW and their threads. Everywhere else, direct messages included, Tavily filters them out.
 def isSafeSearch(message)
-  if($TAVILYCONF['safeSearch'] == 'always')
+  if($TAVILYCONF.to_h['safeSearch'] == 'always') # the setting lives in tavily.conf, which may be missing
     return true
   end
 

@@ -101,11 +101,3 @@ def fillWikiEmbed(embed, response)
   end
   embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: footer)
 end
-
-# Cut on a word, with an ellipsis
-def cutText(text, length)
-  if(text.length <= length)
-    return text
-  end
-  text[0, length].sub(/\s+\S*\z/, '') + '…'
-end
