@@ -104,7 +104,20 @@ def fillSteamEmbed(embed, response)
   if(app.dig('metacritic', 'score'))
     embed.add_field(name: 'Metacritic', value: app['metacritic']['score'].to_s, inline: true)
   end
+  if($STEAMCONF['instantGaming'] != false)
+    embed.add_field(name: 'Instant Gaming', value: "[#{$__steam_instant_gaming}](#{instantGamingSearchUrl(app['name'])})", inline: false)
+  end
   embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Steam')
+end
+
+# Instant Gaming has no API (see the README): a link to its own search for the game, often cheaper than Steam. Its search page is translated in the URL, French or English.
+def instantGamingSearchUrl(name)
+  path = steamLanguage == 'french' ? 'fr/rechercher' : 'en/search'
+  params = { 'q' => name }
+  if(!$STEAMCONF['instantGamingReferral'].to_s.empty?)
+    params['igr'] = $STEAMCONF['instantGamingReferral'] # Instant Gaming's affiliate code
+  end
+  "https://www.instant-gaming.com/#{path}/?" + URI.encode_www_form(params)
 end
 
 def formatSteamPrice(app)

@@ -43,11 +43,20 @@ The Google version is still in the history: see commit `4b237a5` (`google.rb` an
 1. Add `!help` command
 1. ~~Add `!wiki` command~~
 1. ~~Add `!steam` command~~
-1. Add `!amazon` command ?
-1. Add `!instant-gaming` command ?
+1. ~~Add `!amazon` command~~: dropped, see [below](#why-no-amazon-nor-instant-gaming-command-)
+1. ~~Add `!instant-gaming` command~~: a link in `!steam` instead, see [below](#why-no-amazon-nor-instant-gaming-command-)
 1. Add google translate ?
-  
-See [Project](https://github.com/MaXo2-YM/Moogle/projects/1).
+
+The backlog used to live in a GitHub Project (classic), which GitHub removed in 2024.
+
+### Why no Amazon nor Instant Gaming command ?
+Neither offers a free API a small bot can use:
+- Amazon's only product API, the Creators API (which replaced the Product Advertising API in 2026), is reserved to members of the Amazon Associates program with at least 10 qualifying sales in the last 30 days.
+- Instant Gaming has no public API, only an affiliate program. The tools found online scrape its pages, which can break any day.
+
+Searching their sites through Tavily (`include_domains`) was tried in November 2026: Amazon found nothing for half of the searches, or search pages and a Japanese edition instead of the product, and Instant Gaming found the right game 3 times out of 4 but in English. Neither gave any price. Not reliable enough for a command.
+
+For games, `!steam` gives the real price, and links to the game on Instant Gaming's search, which is often cheaper.
 
 ## Dependencies
 ### Before coding
@@ -214,6 +223,8 @@ It sends the first game of a Steam Store search to the channel with its title an
 Prices and texts follow the bot's language (`fr_FR` gives prices in euros and French texts), unless `country` and `language` are set in `./conf/steam.conf`. Outside channels marked NSFW, games Steam tags with adult sexual content are skipped for the next result.
 
 Steam has no official API to search its store: the bot uses the JSON endpoints of the store's own pages, public and keyless but undocumented, so Valve may change them without notice. They are rate limited, hence a default `dailyLimit` of `100` a day in `./conf/steam.conf`.
+
+The embed ends with a link to the game on [Instant Gaming](https://www.instant-gaming.com)'s search (in French for a French bot, in English otherwise): `instantGaming` to `false` in `./conf/steam.conf` removes it. If you're part of Instant Gaming's affiliate program, put your code (the `igr=` of your affiliate link) in `instantGamingReferral`: the link then carries it.
 
 #### `!help`
 display all commands available and their descriptions

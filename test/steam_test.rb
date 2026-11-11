@@ -63,6 +63,29 @@ class SteamTest < MoogleTest
     assert_equal 'german', steamLanguage
   end
 
+  def test_instant_gaming_link_in_the_bot_language
+    message = FakeMessage.new("!steam baldur's gate 3")
+    withHTTP(FakeHTTP.new(searchResponse(1086940), detailsResponse(1086940))) { steamSearch(message) }
+    assert_equal "[Search on Instant Gaming](https://www.instant-gaming.com/en/search/?q=Baldur%27s+Gate+3)", fieldValue(message.channel.embeds.first, 'Instant Gaming')
+
+    $Language = 'fr_FR'
+    assert_equal 'https://www.instant-gaming.com/fr/rechercher/?q=Hades', instantGamingSearchUrl('Hades')
+  ensure
+    $Language = 'en_EN'
+  end
+
+  def test_instant_gaming_referral_code
+    $STEAMCONF['instantGamingReferral'] = 'moogle'
+    assert_equal 'https://www.instant-gaming.com/en/search/?q=Hades&igr=moogle', instantGamingSearchUrl('Hades')
+  end
+
+  def test_instant_gaming_link_can_be_removed
+    $STEAMCONF['instantGaming'] = false
+    message = FakeMessage.new('!steam hades')
+    withHTTP(FakeHTTP.new(searchResponse(1), detailsResponse(1))) { steamSearch(message) }
+    assert_nil fieldValue(message.channel.embeds.first, 'Instant Gaming')
+  end
+
   def test_discount_price
     app = JSON.parse(detailsResponse(1, price: { 'initial_formatted' => '59,99€', 'final_formatted' => '29,99€', 'discount_percent' => 50 }).body)['1']['data']
     assert_equal '~~59,99€~~ **29,99€** (-50%)', formatSteamPrice(app)
