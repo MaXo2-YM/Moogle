@@ -82,15 +82,16 @@ def wikiRequest(language, path)
   requestJSON(uri, request)
 end
 
+# Several articles share this name: a plain answer with a link to the page listing them, between < > so Discord doesn't turn it back into an embed
+def wikiDisambiguationAnswer(response)
+  $__wiki_disambiguation.gsub('%1', "[#{response['title']}](<#{response['wikiUrl']}>)")
+end
+
 def fillWikiEmbed(embed, response)
   embed.title = response['title']
   embed.url = response['wikiUrl']
-  if(response['type'] == 'disambiguation') # several articles share this name: the page lists them
-    embed.description = $__wiki_disambiguation.gsub('%1', "[#{response['title']}](#{response['wikiUrl']})")
-  else
-    description = response['description'].to_s.empty? ? '' : "*#{response['description']}*\n"
-    embed.description = description + cutText(response['extract'].to_s, 300)
-  end
+  description = response['description'].to_s.empty? ? '' : "*#{response['description']}*\n"
+  embed.description = description + cutText(response['extract'].to_s, 300)
   if(response.dig('thumbnail', 'source'))
     embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: response['thumbnail']['source'])
   end

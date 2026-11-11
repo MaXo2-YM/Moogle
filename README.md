@@ -198,7 +198,7 @@ By default it only looks for videos that can play outside YouTube, so the player
 #### `!wiki <search>`
 >alias: `!wk` (casse insensitive)
 
-It sends the first article of a Wikipedia search to the channel with its title and link, its short description, the beginning of its summary and its picture. A disambiguation page (several articles sharing a name) says so and links to the list.
+It sends the first article of a Wikipedia search to the channel with its title and link, its short description, the beginning of its summary and its picture. A disambiguation page (several articles sharing a name) gets a plain message instead, with a link to the list.
 
 The Wikipedia searched is the one of the bot's language (`$Language` in `./conf/app.conf`, `fr_FR` searches fr.wikipedia.org), unless `language` is set in `./conf/wikipedia.conf`. Each language is a separate Wikipedia, so when nothing at all is found, the bot searches the `fallbackLanguage` one (`en` by default, empty for none) and says it in the footer.
 

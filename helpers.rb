@@ -91,6 +91,9 @@ def sendResponseToChannel(message, response)
       # No mention can ping anyone: the text comes from the video's description
       return message.respond(formatVideoMessage(response), false, nil, nil, { parse: [] })
     end
+    if(response['wikiUrl'] && response['type'] == 'disambiguation')
+      return message.respond(wikiDisambiguationAnswer(response), false, nil, nil, { parse: [] })
+    end
     if(response['wikiUrl'])
       return message.channel.send_embed { |embed| fillWikiEmbed(embed, response) }
     end

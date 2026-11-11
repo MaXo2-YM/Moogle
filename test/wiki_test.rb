@@ -69,10 +69,9 @@ class WikiTest < MoogleTest
     message = FakeMessage.new('!wiki mercury')
     withHTTP(FakeHTTP.new(searchResponse('Mercury'), summaryResponse(title: 'Mercury', type: 'disambiguation', thumbnail: nil))) { wikiSearch(message) }
 
-    embed = message.channel.embeds.first
-    assert_equal 'Did you think I was a fucking LLM to guess what you want to know? Pick one: [Mercury](https://en.wikipedia.org/wiki/Mercury)', embed.description
-    assert_equal 'https://en.wikipedia.org/wiki/Mercury', embed.url
-    assert_nil embed.thumbnail
+    assert_empty message.channel.embeds
+    assert_equal ['Did you think I was a fucking LLM to guess what you want to know? Pick one: [Mercury](<https://en.wikipedia.org/wiki/Mercury>)'], message.answers
+    assert_equal({ parse: [] }, message.respondOptions.last)
   end
 
   def test_prefix_searches_another_language
