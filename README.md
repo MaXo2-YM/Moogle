@@ -41,7 +41,7 @@ The Google version is still in the history: see commit `4b237a5` (`google.rb` an
 1. ~~Replace Google Custom Search with Tavily~~
 1. ~~Add `!youtube` command~~
 1. Add `!help` command
-1. Add `!wiki` command
+1. ~~Add `!wiki` command~~
 1. Add `!steam` command ?
 1. Add `!amazon` command ?
 1. Add `!instant-gaming` command ?
@@ -69,6 +69,7 @@ You'll need 2 things before you even get started, and a third one for `!youtube`
 - `APIKey` in `./conf/tavily.conf`
 - `token` in `./conf/discord.conf`
 - `APIKey` in `./conf/youtube.conf` for `!youtube`
+- nothing for `!wiki`: Wikipedia's API needs no key, `./conf/wikipedia.conf` only changes its defaults
 
 A command whose config file is missing or still has the example key answers that its service isn't set up, with a link to this README, instead of failing.
 5. In the [Discord Developer Portal](https://discord.com/developers/applications), enable **Message Content Intent** in your bot's settings: without it, Discord sends the server messages empty and the bot only answers mentions
@@ -197,8 +198,13 @@ By default it only looks for videos that can play outside YouTube, so the player
 #### `!wiki <search>`
 >alias: `!wk` (casse insensitive)
 
-It will send the first result of a Wikipedia search to the channel with Title, Description, Thumbnail (if available), and direct Link.
-> **YET TO BE IMPLEMENTED**
+It sends the first article of a Wikipedia search to the channel with its title and link, its short description, the beginning of its summary and its picture. A disambiguation page (several articles sharing a name) says so and links to the list.
+
+The Wikipedia searched is the one of the bot's language (`$Language` in `./conf/app.conf`, `fr_FR` searches fr.wikipedia.org), unless `language` is set in `./conf/wikipedia.conf`. Each language is a separate Wikipedia, so when nothing at all is found, the bot searches the `fallbackLanguage` one (`en` by default, empty for none) and says it in the footer.
+
+To search another Wikipedia, prefix the search with its language code, like links between Wikipedias do: `!wiki en:Shadowheart`. A prefix that isn't a Wikipedia stays in the search: `!wiki re:zero` looks for "re:zero".
+
+Wikipedia's API is free and needs no key: the command works without config, and has no daily limit unless `dailyLimit` is set in `./conf/wikipedia.conf`.
 
 #### `!steam <search>`
 >alias: `!st` (casse insensitive)

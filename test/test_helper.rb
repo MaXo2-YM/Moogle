@@ -20,6 +20,7 @@ module Discordrb
   module Webhooks
     EmbedImage = Struct.new(:url, keyword_init: true)
     EmbedFooter = Struct.new(:text, keyword_init: true)
+    EmbedThumbnail = Struct.new(:url, keyword_init: true)
   end
 end
 
@@ -29,13 +30,14 @@ load './conf/cmd.conf'
 load './lang/en_EN'
 require_relative '../tavily'
 require_relative '../youtube'
+require_relative '../wikipedia'
 require_relative '../helpers'
 require_relative '../count'
 
 BOT_ID = 855558221945896980
 
 # Plain structs rather than OpenStruct, which recent Rubies no longer ship by default
-Embed = Struct.new(:title, :url, :description, :image, :footer)
+Embed = Struct.new(:title, :url, :description, :image, :thumbnail, :footer)
 Author = Struct.new(:username)
 Profile = Struct.new(:id)
 
@@ -147,7 +149,8 @@ class MoogleTest < Minitest::Test
     $shownStatus = [:online, $__status_ok] # as shown when the bot connected
     $statusRefresh&.kill
     $HealthCheckHours = nil
-    FileUtils.rm_f([GOOGLE_COUNT, YOUTUBE_COUNT])
+    FileUtils.rm_f([GOOGLE_COUNT, YOUTUBE_COUNT, WIKI_COUNT])
+    $WIKICONF = { 'language' => '', 'fallbackLanguage' => 'en', 'dailyLimit' => 0 }
     $LimitSearch = nil
     $Uncapped = false
     $TAVILYCONF['dailyLimit'] = 30

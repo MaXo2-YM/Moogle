@@ -7,3 +7,5 @@ log/*
 !log/.gitkeep
 count
 count_youtube
+conf/wikipedia.conf
+count_wiki

@@ -12,3 +12,6 @@ $__views = "%1 views"
 $__live = "live"
 $__number_units = ["", "K", "M", "B"]
 $__decimal_separator = "."
+$__wiki_footer = "Wikipedia (%1)"
+$__wiki_fallback = "Wikipedia (%1) · nothing found in %2"
+$__wiki_disambiguation = "Did you think I was a fucking LLM to guess what you want to know? Pick one: %1"

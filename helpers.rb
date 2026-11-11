@@ -83,6 +83,9 @@ def sendResponseToChannel(message, response)
       # No mention can ping anyone: the text comes from the video's description
       return message.respond(formatVideoMessage(response), false, nil, nil, { parse: [] })
     end
+    if(response['wikiUrl'])
+      return message.channel.send_embed { |embed| fillWikiEmbed(embed, response) }
+    end
 
     message.channel.send_embed do |embed|
       if(isImageSearch(message))
@@ -118,8 +121,8 @@ def log(message, response)
 
   link = "null"
   if (response["code"] == "200")
-    if(response['videoUrl'])
-      link = response['videoUrl']
+    if(response['videoUrl'] || response['wikiUrl'])
+      link = response['videoUrl'] || response['wikiUrl']
     else
       link = isImageSearch(message) ? response['images'][0] : response['results'][0]['url']
     end

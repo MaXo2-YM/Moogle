@@ -1,0 +1,5 @@
+$WIKICONF = {
+  'language' => '', #Wikipedia's language code (ex: 'fr'), empty to follow the bot's $Language
+  'fallbackLanguage' => 'en', #Searched when nothing is found in the language above, empty for none
+  'dailyLimit' => 0, #Searches a day, 0 for no limit: Wikipedia's API is free, without quota
+}
