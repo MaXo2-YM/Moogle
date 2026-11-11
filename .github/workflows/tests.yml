@@ -20,5 +20,5 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: none # the tests don't need discordrb
-      - run: rake test
+          bundler-cache: true # Nokogiri for the Wiktionary pages
+      - run: bundle exec rake test
