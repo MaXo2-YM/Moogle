@@ -1,0 +1,4 @@
+$WIKTCONF = {
+  'language' => '', #Wiktionary's language code (ex: 'fr'), empty to follow the bot's $Language
+  'dailyLimit' => 0, #Searches a day, 0 for no limit: Wiktionary's API is free, without quota
+}

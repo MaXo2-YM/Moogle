@@ -32,6 +32,7 @@ require_relative '../tavily'
 require_relative '../youtube'
 require_relative '../wikipedia'
 require_relative '../steam'
+require_relative '../wiktionary'
 require_relative '../helpers'
 require_relative '../count'
 
@@ -62,10 +63,11 @@ end
 
 # What the bot sent back: embeds and plain answers
 class FakeChannel
-  attr_reader :embeds, :parent
+  attr_reader :embeds, :embedTexts, :parent
 
   def initialize(nsfw: false, thread: false, parent: nil)
     @embeds = []
+    @embedTexts = []
     @nsfw = nsfw
     @thread = thread
     @parent = parent
@@ -79,10 +81,12 @@ class FakeChannel
     @thread
   end
 
-  def send_embed
+  # The text sent with the embed, as discordrb's send_embed takes it
+  def send_embed(text = '')
     embed = Embed.new
     yield embed
     @embeds << embed
+    @embedTexts << text
   end
 end
 
@@ -157,6 +161,8 @@ class MoogleTest < Minitest::Test
     FileUtils.rm_f([GOOGLE_COUNT, YOUTUBE_COUNT, WIKI_COUNT, STEAM_COUNT])
     $STEAMCONF = { 'country' => '', 'language' => '', 'dailyLimit' => 100 }
     $IGCONF = {}
+    $WIKTCONF = { 'language' => '', 'dailyLimit' => 0 }
+    FileUtils.rm_f(WIKT_COUNT)
     $WIKICONF = { 'language' => '', 'fallbackLanguage' => 'en', 'dailyLimit' => 0 }
     $LimitSearch = nil
     $Uncapped = false

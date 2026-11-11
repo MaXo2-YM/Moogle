@@ -100,6 +100,9 @@ def sendResponseToChannel(message, response)
     if(response['steamUrl'])
       return message.channel.send_embed { |embed| fillSteamEmbed(embed, response) }
     end
+    if(response['wiktUrl'])
+      return message.channel.send_embed(wiktOtherLanguageText(response)) { |embed| fillWiktEmbed(embed, response) }
+    end
 
     message.channel.send_embed do |embed|
       if(isImageSearch(message))
@@ -135,8 +138,8 @@ def log(message, response)
 
   link = "null"
   if (response["code"] == "200")
-    if(response['videoUrl'] || response['wikiUrl'] || response['steamUrl'])
-      link = response['videoUrl'] || response['wikiUrl'] || response['steamUrl']
+    if(response['videoUrl'] || response['wikiUrl'] || response['steamUrl'] || response['wiktUrl'])
+      link = response['videoUrl'] || response['wikiUrl'] || response['steamUrl'] || response['wiktUrl']
     else
       link = isImageSearch(message) ? response['images'][0] : response['results'][0]['url']
     end

@@ -12,3 +12,6 @@ count_wiki
 conf/steam.conf
 count_steam
 conf/ig.conf
+conf/wiktionary.conf
+count_wikt
+.bundle/

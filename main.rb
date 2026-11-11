@@ -3,6 +3,7 @@ require_relative 'tavily'
 require_relative 'youtube'
 require_relative 'wikipedia'
 require_relative 'steam'
+require_relative 'wiktionary'
 require_relative 'helpers'
 require_relative 'count'
 load './conf/app.conf'
@@ -47,6 +48,8 @@ bot.message do |message|
       wikiSearch message
     elsif(extractCmd(message).match($commands['steam']))
       steamSearch message
+    elsif(extractCmd(message).match($commands['wiktionary']))
+      wiktSearch message
     end
   end
 end
