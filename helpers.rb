@@ -14,6 +14,14 @@ end
 
 README_URL = 'https://github.com/MaXo2-YM/Moogle'
 
+# Cut on a word, with an ellipsis
+def cutText(text, length)
+  if(text.length <= length)
+    return text
+  end
+  text[0, length].sub(/\s+\S*\z/, '') + '…'
+end
+
 # A service is configured when its config file was loaded and its API key isn't the .example placeholder
 def isConfigured(conf)
   !conf.nil? && !conf['APIKey'].to_s.empty? && !conf['APIKey'].start_with?('YOUR-')
@@ -86,6 +94,9 @@ def sendResponseToChannel(message, response)
     if(response['wikiUrl'])
       return message.channel.send_embed { |embed| fillWikiEmbed(embed, response) }
     end
+    if(response['steamUrl'])
+      return message.channel.send_embed { |embed| fillSteamEmbed(embed, response) }
+    end
 
     message.channel.send_embed do |embed|
       if(isImageSearch(message))
@@ -121,8 +132,8 @@ def log(message, response)
 
   link = "null"
   if (response["code"] == "200")
-    if(response['videoUrl'] || response['wikiUrl'])
-      link = response['videoUrl'] || response['wikiUrl']
+    if(response['videoUrl'] || response['wikiUrl'] || response['steamUrl'])
+      link = response['videoUrl'] || response['wikiUrl'] || response['steamUrl']
     else
       link = isImageSearch(message) ? response['images'][0] : response['results'][0]['url']
     end

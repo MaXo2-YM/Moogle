@@ -31,13 +31,18 @@ load './lang/en_EN'
 require_relative '../tavily'
 require_relative '../youtube'
 require_relative '../wikipedia'
+require_relative '../steam'
 require_relative '../helpers'
 require_relative '../count'
 
 BOT_ID = 855558221945896980
 
 # Plain structs rather than OpenStruct, which recent Rubies no longer ship by default
-Embed = Struct.new(:title, :url, :description, :image, :thumbnail, :footer)
+Embed = Struct.new(:title, :url, :description, :image, :thumbnail, :footer, :fields) do
+  def add_field(name:, value:, inline: false)
+    (self.fields ||= []) << { name: name, value: value, inline: inline }
+  end
+end
 Author = Struct.new(:username)
 Profile = Struct.new(:id)
 
@@ -149,7 +154,8 @@ class MoogleTest < Minitest::Test
     $shownStatus = [:online, $__status_ok] # as shown when the bot connected
     $statusRefresh&.kill
     $HealthCheckHours = nil
-    FileUtils.rm_f([GOOGLE_COUNT, YOUTUBE_COUNT, WIKI_COUNT])
+    FileUtils.rm_f([GOOGLE_COUNT, YOUTUBE_COUNT, WIKI_COUNT, STEAM_COUNT])
+    $STEAMCONF = { 'country' => '', 'language' => '', 'dailyLimit' => 100 }
     $WIKICONF = { 'language' => '', 'fallbackLanguage' => 'en', 'dailyLimit' => 0 }
     $LimitSearch = nil
     $Uncapped = false

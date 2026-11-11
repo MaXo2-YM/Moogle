@@ -1,0 +1,5 @@
+$STEAMCONF = {
+  'country' => '', #Prices of this country, ISO 3166-1 alpha-2 code (ex: 'FR'), empty to follow the bot's $Language
+  'language' => '', #Steam's language name (ex: 'french'), empty to follow the bot's $Language
+  'dailyLimit' => 100, #Searches a day, 0 for no limit: Steam limits its unofficial store API without telling how much
+}

@@ -42,7 +42,7 @@ The Google version is still in the history: see commit `4b237a5` (`google.rb` an
 1. ~~Add `!youtube` command~~
 1. Add `!help` command
 1. ~~Add `!wiki` command~~
-1. Add `!steam` command ?
+1. ~~Add `!steam` command~~
 1. Add `!amazon` command ?
 1. Add `!instant-gaming` command ?
 1. Add google translate ?
@@ -69,7 +69,7 @@ You'll need 2 things before you even get started, and a third one for `!youtube`
 - `APIKey` in `./conf/tavily.conf`
 - `token` in `./conf/discord.conf`
 - `APIKey` in `./conf/youtube.conf` for `!youtube`
-- nothing for `!wiki`: Wikipedia's API needs no key, `./conf/wikipedia.conf` only changes its defaults
+- nothing for `!wiki` and `!steam`: their APIs need no key, `./conf/wikipedia.conf` and `./conf/steam.conf` only change their defaults
 
 A command whose config file is missing or still has the example key answers that its service isn't set up, with a link to this README, instead of failing.
 5. In the [Discord Developer Portal](https://discord.com/developers/applications), enable **Message Content Intent** in your bot's settings: without it, Discord sends the server messages empty and the bot only answers mentions
@@ -209,8 +209,11 @@ Wikipedia's API is free and needs no key: the command works without config, and 
 #### `!steam <search>`
 >alias: `!st` (casse insensitive)
 
-It will send the first result of a Steam Store search to the channel with Title, Description, Thumbnail (if available), and direct Link. I'll have to find if there is an Steam Store API available.
-> **YET TO BE IMPLEMENTED**
+It sends the first game of a Steam Store search to the channel with its title and link, its description, its header picture, and its price (struck through with the discount when on sale, or "Free"), release date, genres and Metacritic score.
+
+Prices and texts follow the bot's language (`fr_FR` gives prices in euros and French texts), unless `country` and `language` are set in `./conf/steam.conf`. Outside channels marked NSFW, games Steam tags with adult sexual content are skipped for the next result.
+
+Steam has no official API to search its store: the bot uses the JSON endpoints of the store's own pages, public and keyless but undocumented, so Valve may change them without notice. They are rate limited, hence a default `dailyLimit` of `100` a day in `./conf/steam.conf`.
 
 #### `!help`
 display all commands available and their descriptions
