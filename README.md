@@ -41,7 +41,7 @@ The Google version is still in the history: see commit `4b237a5` (`google.rb` an
 1. ~~Add Google Images~~
 1. ~~Replace Google Custom Search with Tavily~~
 1. ~~Add `!youtube` command~~
-1. Add `!help` command
+1. ~~Add `!help` command~~
 1. ~~Add `!wiki` command~~
 1. ~~Add `!steam` command~~
 1. ~~Add `!amazon` command~~: dropped, see [below](#why-no-amazon-nor-instant-gaming-command-)
@@ -242,5 +242,6 @@ The Wiktionary is the one of the bot's language, like `!wiki`, unless `language`
 The French Wiktionary has no definitions API (the one of Wikimedia's REST API only exists for the English Wiktionary, in English): the bot reads the word's page, with [Nokogiri](https://nokogiri.org). If the Wiktionary changes its page layout, the command may break: the tests use real pages saved in `./test/fixtures/wiktionary`, refresh them then. Like Wikipedia, it needs no key and has no daily limit unless `dailyLimit` is set in `./conf/wiktionary.conf`.
 
 #### `!help`
-display all commands available and their descriptions
-> **YET TO BE IMPLEMENTED**
+>alias: `!aide` (casse insensitive)
+
+It sends you, in a private message, the commands you can use right now, with their aliases, what they do and their options: a command whose service isn't set up, or which reached its [daily count](#daily-count), is left out. In the channel, the bot reacts to your message with 📬 so you know where to look. If your private messages are closed to the server's members, it says so in the channel instead.

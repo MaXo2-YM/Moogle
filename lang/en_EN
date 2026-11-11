@@ -23,3 +23,13 @@ $__steam_no_price = "Not for sale"
 $__steam_instant_gaming = "Search on Instant Gaming"
 $__wikt_footer = "Wiktionary (%1)"
 $__wikt_other_language = "Found nothing in %1, but in %2, yes:"
+$__help_header = "**Commands available right now:**"
+$__help_commands = {
+  'google' => "**`%pgoogle <search>`** (`%pgl`, `%pmoogle`, `%pml`, `%pgougle`, `%pmougle`)\nThe first result of a web search. `-i` for the first image: `%pgl -i ginger cat`. Also works by mentioning me: `@Moogle <search>`.",
+  'youtube' => "**`%pyoutube <search>`** (`%pyt`)\nThe first video, with its date, views and duration, playable right in Discord.",
+  'wiki' => "**`%pwiki <search>`** (`%pwk`)\nThe Wikipedia article with its summary. Prefix a language to search another one: `%pwiki fr:Shadowheart`.",
+  'wiktionary' => "**`%pwikt <word>`** (`%pdef`)\nThe Wiktionary definitions. Same language prefix: `%pdef fr:bonjour`.",
+  'steam' => "**`%psteam <game>`** (`%pst`)\nThe game on Steam, with its price (and the discount if any), release date and Metacritic score.",
+}
+$__help_nothing_available = "Nothing is available right now, come back later."
+$__help_private_closed = "I can't send you a private message: allow direct messages from server members (Privacy Settings) and try again."

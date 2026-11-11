@@ -33,6 +33,7 @@ require_relative '../youtube'
 require_relative '../wikipedia'
 require_relative '../steam'
 require_relative '../wiktionary'
+require_relative '../help'
 require_relative '../helpers'
 require_relative '../count'
 
@@ -44,7 +45,28 @@ Embed = Struct.new(:title, :url, :description, :image, :thumbnail, :footer, :fie
     (self.fields ||= []) << { name: name, value: value, inline: inline }
   end
 end
-Author = Struct.new(:username)
+# The message's author, who can be sent private messages, or have them closed
+class FakeAuthor
+  attr_reader :privateMessages
+
+  def initialize
+    @privateMessages = []
+  end
+
+  def username
+    'tester'
+  end
+
+  def pm(text)
+    raise StandardError, '50007: Cannot send messages to this user' if @closed
+
+    @privateMessages << text
+  end
+
+  def closePrivateMessages
+    @closed = true
+  end
+end
 Profile = Struct.new(:id)
 
 # Records the statuses the bot would show on Discord
@@ -65,7 +87,8 @@ end
 class FakeChannel
   attr_reader :embeds, :embedTexts, :parent
 
-  def initialize(nsfw: false, thread: false, parent: nil)
+  def initialize(nsfw: false, thread: false, parent: nil, pm: false)
+    @pm = pm
     @embeds = []
     @embedTexts = []
     @nsfw = nsfw
@@ -75,6 +98,10 @@ class FakeChannel
 
   def nsfw?
     @nsfw
+  end
+
+  def pm?
+    @pm
   end
 
   def thread?
@@ -107,7 +134,24 @@ class FakeMessage
   end
 
   def author
-    Author.new('tester')
+    @author ||= FakeAuthor.new
+  end
+
+  # discordrb's event.message: the message itself, which the bot can react to
+  attr_reader :reactions
+
+  def message
+    self
+  end
+
+  def react(emoji)
+    raise @reactError if @reactError
+
+    (@reactions ||= []) << emoji
+  end
+
+  def refuseReactions
+    @reactError = StandardError.new('Missing Permissions')
   end
 
   def bot
