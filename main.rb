@@ -32,7 +32,8 @@ end
 MESSAGE_CONTENT_INTENT = 1 << 15
 intents = Discordrb::INTENTS.values_at(:servers, :server_messages, :direct_messages).reduce(:|) | MESSAGE_CONTENT_INTENT
 
-bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix'], intents: intents
+# help_command: false, or discordrb answers its own "List of commands" next to our !help
+bot = Discordrb::Commands::CommandBot.new token: $discord['token'], prefix: $discord['prefix'], intents: intents, help_command: false
 bot.ready do |event| # on every (re)connection to Discord
   showStatus(bot, force: true)
 end
