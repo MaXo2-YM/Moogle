@@ -1,0 +1,3 @@
+$IGCONF = {
+  'affiliateCode' => '', #Your Instant Gaming affiliate code, the end of your link https://www.instant-gaming.com/?igr=CODE, empty for no affiliation
+}

@@ -11,6 +11,12 @@ if(File.exist?('./conf/steam.conf'))
   load './conf/steam.conf' # $STEAMCONF const
 end
 
+# Optional: the Instant Gaming affiliate code of whoever runs the bot, added to the Instant Gaming links
+$IGCONF = {}
+if(File.exist?('./conf/ig.conf'))
+  load './conf/ig.conf' # $IGCONF const
+end
+
 STEAM_COUNT = 'count_steam'
 STEAM_STORE = 'https://store.steampowered.com'
 # Steam names its languages instead of using codes
@@ -104,7 +110,20 @@ def fillSteamEmbed(embed, response)
   if(app.dig('metacritic', 'score'))
     embed.add_field(name: 'Metacritic', value: app['metacritic']['score'].to_s, inline: true)
   end
+  if($STEAMCONF['instantGaming'] != false)
+    embed.add_field(name: 'Instant Gaming', value: "[#{$__steam_instant_gaming}](#{instantGamingSearchUrl(app['name'])})", inline: false)
+  end
   embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Steam')
+end
+
+# Instant Gaming has no API (see the README): a link to its own search for the game, often cheaper than Steam. Its search page is translated in the URL, French or English.
+def instantGamingSearchUrl(name)
+  path = steamLanguage == 'french' ? 'fr/rechercher' : 'en/search'
+  params = { 'q' => name }
+  if(!$IGCONF['affiliateCode'].to_s.empty?) # no code, no affiliation
+    params['igr'] = $IGCONF['affiliateCode']
+  end
+  "https://www.instant-gaming.com/#{path}/?" + URI.encode_www_form(params)
 end
 
 def formatSteamPrice(app)
