@@ -88,8 +88,11 @@ class FakeMessage
     @answers = []
   end
 
-  def respond(text)
+  attr_reader :respondOptions
+
+  def respond(text, *options)
     @answers << text
+    @respondOptions = options
   end
 
   def author
@@ -107,8 +110,9 @@ FakeResponse = Struct.new(:code, :message, :body)
 class FakeHTTP
   attr_reader :requests
 
-  def initialize(response = nil, error: nil)
-    @response = response
+  # Several responses answer the requests in turn, the last one answers the extra requests
+  def initialize(*responses, error: nil)
+    @responses = responses
     @error = error
     @requests = []
   end
@@ -121,7 +125,7 @@ class FakeHTTP
 
   def request(request)
     @requests << request
-    @response
+    @responses.length > 1 ? @responses.shift : @responses.first
   end
 
   def last_body

@@ -80,7 +80,8 @@ def sendResponseToChannel(message, response)
   case response['code']
   when "200"
     if(response['videoUrl'])
-      return message.respond(response['videoUrl'])
+      # No mention can ping anyone: the text comes from the video's description
+      return message.respond(formatVideoMessage(response), false, nil, nil, { parse: [] })
     end
 
     message.channel.send_embed do |embed|
