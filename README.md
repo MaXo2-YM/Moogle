@@ -25,6 +25,7 @@ A Ruby discord bot to use as "I'm feeling lucky" (Display the first result of a 
 		- [`!youtube <search>`](#youtube-search)
 		- [`!wiki <search>`](#wiki-search)
 		- [`!steam <search>`](#steam-search)
+		- [`!wikt <word>`](#wikt-word)
 		- [`!help`](#help)
 
 ## Why not Google anymore ?
@@ -69,6 +70,7 @@ You'll need 2 things before you even get started, and a third one for `!youtube`
 - [Ruby](http://www.ruby-lang.org) `3.4` (see `.ruby-version`, `discordrb` 3.8 needs 3.2 or newer). Building it with rbenv needs libyaml (`libyaml-dev` on Debian): without root access, build libyaml in your home and pass `RUBY_CONFIGURE_OPTS="--with-libyaml-dir=$HOME/.local/libyaml"` to `rbenv install`
 - git
 - `discordrb` gem (see their [documentation](https://github.com/shardlab/discordrb))
+- `nokogiri` gem, for `!wikt`. Its precompiled versions need glibc 2.29 or newer: on an older Linux (Debian 10…), run `$ bundle config set --local force_ruby_platform true` before `bundle install` to compile it (a few minutes, it only needs gcc, make and zlib)
 
 ## Installation
 1. Clone this repository
@@ -98,7 +100,7 @@ $ systemctl --user enable --now moogle
 3. Then `$ systemctl --user status moogle`, `$ systemctl --user restart moogle` after a pull (plus `$ systemctl --user daemon-reload` first if the pull changed `moogle.service`), and `$ tail -f ~/Moogle/log/console.log` for the console output.
 
 ## Tests
-Run them with `$ rake test` (Minitest and Rake come with Ruby, nothing to install).
+Run them with `$ bundle exec rake test`, after `bundle install` (they need Nokogiri for the Wiktionary pages).
 
 They don't need Discord nor a Tavily key: messages are fake, Tavily answers are canned, and they run in a temporary copy built from the `.example` files, so your config and your daily count are never touched. `main.rb` (the connection to Discord) is the only file they don't cover.
 
@@ -229,6 +231,15 @@ The embed ends with a link to the game on [Instant Gaming](https://www.instant-g
 If you're part of Instant Gaming's [affiliate program](https://www.instant-gaming.com/fr/partenariat/), copy `./conf/ig.conf.example` to `./conf/ig.conf` and put your code (the end of your link `https://www.instant-gaming.com/?igr=CODE`) in `affiliateCode`: the links then carry it. Without that file, or with an empty code, the links carry no affiliation.
 
 > The Moogle bot run by its author has an affiliate code: buying a game through its Instant Gaming links pays him 3% of the sale, at no cost for you.
+
+#### `!wikt <word>`
+>alias: `!def` (casse insensitive)
+
+It sends the definitions of a word from the Wiktionary: for its first two parts of speech (noun, verb…), the first three definitions with their labels (*Familiar*, *Dated*…), without the examples.
+
+The Wiktionary is the one of the bot's language, like `!wiki`, unless `language` is set in `./conf/wiktionary.conf`, and `!wikt en:hello` looks a word up on another one. When the word exists, but not in the bot's language, the bot says so ("J'trouve rien en français, mais en allemand, oui :") and gives the definitions of the first language that has it.
+
+The French Wiktionary has no definitions API (the one of Wikimedia's REST API only exists for the English Wiktionary, in English): the bot reads the word's page, with [Nokogiri](https://nokogiri.org). If the Wiktionary changes its page layout, the command may break: the tests use real pages saved in `./test/fixtures/wiktionary`, refresh them then. Like Wikipedia, it needs no key and has no daily limit unless `dailyLimit` is set in `./conf/wiktionary.conf`.
 
 #### `!help`
 display all commands available and their descriptions
