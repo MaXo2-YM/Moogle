@@ -4,6 +4,7 @@ require_relative 'youtube'
 require_relative 'wikipedia'
 require_relative 'steam'
 require_relative 'wiktionary'
+require_relative 'help'
 require_relative 'helpers'
 require_relative 'count'
 load './conf/app.conf'
@@ -50,6 +51,8 @@ bot.message do |message|
       steamSearch message
     elsif(extractCmd(message).match($commands['wiktionary']))
       wiktSearch message
+    elsif(extractCmd(message).match($commands['help']))
+      helpCommand message
     end
   end
 end
