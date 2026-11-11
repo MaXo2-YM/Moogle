@@ -5,7 +5,7 @@ require_relative 'wikipedia'
 require_relative 'wiktionary'
 require_relative 'steam'
 
-# The commands !help lists, in this order: a command shows when its service is set up and its daily limit isn't reached
+# The commands !help lists, in this order, when their service is set up
 HELP_COMMANDS = [
   { key: 'google', count: GOOGLE_COUNT, limit: -> { googleDailyLimit }, enabled: -> { isConfigured($TAVILYCONF) } },
   { key: 'youtube', count: YOUTUBE_COUNT, limit: -> { youtubeDailyLimit }, enabled: -> { isConfigured($YOUTUBECONF) } },
@@ -14,16 +14,35 @@ HELP_COMMANDS = [
   { key: 'steam', count: STEAM_COUNT, limit: -> { steamDailyLimit }, enabled: -> { true } }
 ]
 
-def availableCommands
-  HELP_COMMANDS.select { |command| command[:enabled].call && !isLimitReached(command[:count], command[:limit].call) }.map { |command| command[:key] }
+# Commands whose service is set up: the others are left out, they won't come back by themselves. !wiki, !wikt and !steam need no key, so the list is never empty.
+def enabledCommands
+  HELP_COMMANDS.select { |command| command[:enabled].call }
 end
 
-def helpText
-  commands = availableCommands
-  if(commands.empty?)
-    return $__help_nothing_available
+# When a command reached its daily limit, the time its oldest search of the day leaves the 24 h window; nil when it's available
+def commandAvailableAt(command)
+  if(!isLimitReached(command[:count], command[:limit].call))
+    return nil
   end
-  ([$__help_header] + commands.map { |key| $__help_commands[key] }).join("\n\n").gsub('%p', $discord['prefix']) # %p: the command prefix
+  Time.new(*countRecentRequest(command[:count])[0].split('.')) + 86400
+end
+
+def availableCommands
+  enabledCommands.reject { |command| commandAvailableAt(command) }.map { |command| command[:key] }
+end
+
+# A command waiting for its daily limit is struck through with "(dispo dans 3 heures)": a Discord timestamp, shown in the reader's language and kept up to date by Discord
+def helpText
+  texts = enabledCommands.map do |command|
+    text = $__help_commands[command[:key]]
+    availableAt = commandAvailableAt(command)
+    if(availableAt)
+      title, description = text.split("\n", 2)
+      text = "~~#{title}~~ " + $__help_available_at.gsub('%1', "<t:#{availableAt.to_i}:R>") + "\n" + description
+    end
+    text
+  end
+  ([$__help_header] + texts).join("\n\n").gsub('%p', $discord['prefix']) # %p: the command prefix
 end
 
 # In private, so the list doesn't flood the channel: a 📬 reaction there tells where to look

@@ -40,11 +40,15 @@ class HelpTest < MoogleTest
     $YOUTUBECONF = config
   end
 
-  def test_leaves_out_commands_waiting_for_their_daily_limit
+  def test_strikes_commands_waiting_for_their_daily_limit
     $YOUTUBECONF['dailyLimit'] = 1
-    File.write(YOUTUBE_COUNT, timestamp(Time.now) + "\n")
+    searched = Time.now - 3600
+    File.write(YOUTUBE_COUNT, timestamp(searched) + "\n")
     assert_equal ['google', 'wiki', 'wiktionary', 'steam'], availableCommands
-    refute_match '!youtube', helpText
+
+    availableAt = Time.new(*timestamp(searched).split('.')).to_i + 86400 # the count keeps seconds only
+    assert_match "~~**`!youtube <search>`** (`!yt`)~~ (available <t:#{availableAt}:R>)\nThe first video", helpText
+    refute_match '~~**`!google', helpText
   end
 
   def test_command_is_back_once_its_oldest_search_expires
@@ -53,14 +57,26 @@ class HelpTest < MoogleTest
     assert_includes availableCommands, 'google'
   end
 
-  def test_nothing_available
+  def test_every_limited_command_is_still_listed
     $TAVILYCONF['APIKey'] = 'YOUR-TAVILY-API-KEY-HERE'
     $YOUTUBECONF['APIKey'] = 'YOUR-YOUTUBE-API-KEY-HERE'
     $WIKICONF['dailyLimit'] = 1
     $WIKTCONF['dailyLimit'] = 1
     $STEAMCONF['dailyLimit'] = 1
     [WIKI_COUNT, WIKT_COUNT, STEAM_COUNT].each { |count| File.write(count, timestamp(Time.now) + "\n") }
-    assert_equal $__help_nothing_available, helpText
+
+    assert_empty availableCommands
+    assert_equal 3, helpText.scan(/^~~\*\*`!/).length
+  end
+
+  def test_french_wording
+    load './lang/fr_FR'
+    $STEAMCONF['dailyLimit'] = 1
+    File.write(STEAM_COUNT, timestamp(Time.now) + "\n")
+    assert helpText.start_with?('**Ce que je sais faire :**')
+    assert_match(/~~\*\*`!steam <jeu>`\*\* \(`!st`\)~~ \(dispo <t:\d+:R>\)/, helpText)
+  ensure
+    load './lang/en_EN'
   end
 
   def test_says_so_in_the_channel_when_private_messages_are_closed

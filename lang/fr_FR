@@ -23,7 +23,7 @@ $__steam_no_price = "Pas en vente"
 $__steam_instant_gaming = "Chercher sur Instant Gaming"
 $__wikt_footer = "Wiktionnaire (%1)"
 $__wikt_other_language = "J'trouve rien en %1, mais en %2, oui :"
-$__help_header = "**Commandes dispo pour l'instant :**"
+$__help_header = "**Ce que je sais faire :**"
 $__help_commands = {
   'google' => "**`%pgoogle <recherche>`** (`%pgl`, `%pmoogle`, `%pml`, `%pgougle`, `%pmougle`)\nLe premier résultat d'une recherche web. `-i` pour la première image : `%pgl -i chat roux`. Marche aussi en me mentionnant : `@Moogle <recherche>`.",
   'youtube' => "**`%pyoutube <recherche>`** (`%pyt`)\nLa première vidéo, avec sa date, ses vues et sa durée, lisible direct dans Discord.",
@@ -31,5 +31,5 @@ $__help_commands = {
   'wiktionary' => "**`%pwikt <mot>`** (`%pdef`)\nLes définitions du Wiktionnaire. Même préfixe de langue : `%pdef en:hello`.",
   'steam' => "**`%psteam <jeu>`** (`%pst`)\nLe jeu sur Steam, avec son prix (et la promo s'il y en a une), sa sortie et sa note Metacritic.",
 }
-$__help_nothing_available = "Y'a plus rien de dispo pour l'instant, reviens plus tard."
+$__help_available_at = "(dispo %1)"
 $__help_private_closed = "J'peux pas t'écrire en privé : ouvre tes MP aux membres du serveur (Paramètres de confidentialité) et retente."
