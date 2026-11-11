@@ -140,7 +140,7 @@ class TavilyTest < MoogleTest
   end
 
   def test_limit_reached_answers_without_calling_tavily
-    $LimitSearch = 1
+    $TAVILYCONF['dailyLimit'] = 1
     fake = FakeHTTP.new(tavilyResponse(results: [tavilyResult]))
     withHTTP(fake) do
       tavilySearch(FakeMessage.new('!google recette crêpes'))

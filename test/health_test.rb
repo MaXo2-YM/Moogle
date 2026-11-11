@@ -48,7 +48,7 @@ class HealthTest < MoogleTest
   end
 
   def test_last_allowed_search_turns_the_status_orange
-    $LimitSearch = 1
+    $TAVILYCONF['dailyLimit'] = 1
     message = FakeMessage.new('!google recette crêpes')
     withHTTP(FakeHTTP.new(tavilyResponse(results: [tavilyResult]))) { tavilySearch(message) }
 
@@ -58,26 +58,26 @@ class HealthTest < MoogleTest
   end
 
   def test_failure_is_shown_before_the_limit
-    $LimitSearch = 1
+    $TAVILYCONF['dailyLimit'] = 1
     File.write('count', timestamp(Time.now) + "\n")
     $searchHealthy = false
     assert_equal :dnd, currentStatus[0]
   end
 
   def test_back_to_green_when_the_oldest_search_expires
-    $LimitSearch = 1
+    $TAVILYCONF['dailyLimit'] = 1
     File.write('count', timestamp(Time.now - 86400 - 60) + "\n")
     assert_equal [:online, $__status_ok], currentStatus
   end
 
   def test_no_limit_never_turns_orange
-    $LimitSearch = 0
+    $TAVILYCONF['dailyLimit'] = 0
     File.write('count', timestamp(Time.now) + "\n")
     assert_equal :online, currentStatus[0]
   end
 
   def test_refresh_waits_until_the_oldest_search_expires
-    $LimitSearch = 1
+    $TAVILYCONF['dailyLimit'] = 1
     File.write('count', timestamp(Time.now - 86400 + 1) + "\n")
     bot = FakeBot.new
     showStatus(bot)

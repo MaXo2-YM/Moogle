@@ -16,10 +16,10 @@ def youtubeSearch(message)
     return answerNotConfigured(message, 'youtube-search')
   end
 
-  runSearch(message) do
+  runSearch(message, YOUTUBE_COUNT, youtubeDailyLimit) do
     sendYoutubeRequest(createYoutubeUri(message))
   end
-  showStatus(message.bot) # the daily count is shared with !google, the red status stays Tavily's
+  # The status tells about !google only: YouTube's own limit is told in the answer
 end
 
 def createYoutubeUri(message)

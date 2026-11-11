@@ -16,7 +16,7 @@ for arg in ARGV
     $LogToFile = true
   end
   if(arg.match(/-(-uncap|[a-z]*uc[a-z]*)/))
-    $LimitSearch = 0
+    $Uncapped = true # lifts the daily limit of every command
   end
 end
 

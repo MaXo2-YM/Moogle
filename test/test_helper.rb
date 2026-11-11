@@ -147,8 +147,11 @@ class MoogleTest < Minitest::Test
     $shownStatus = [:online, $__status_ok] # as shown when the bot connected
     $statusRefresh&.kill
     $HealthCheckHours = nil
-    FileUtils.rm_f('count')
-    $LimitSearch = 30
+    FileUtils.rm_f([GOOGLE_COUNT, YOUTUBE_COUNT])
+    $LimitSearch = nil
+    $Uncapped = false
+    $TAVILYCONF['dailyLimit'] = 30
+    $YOUTUBECONF['dailyLimit'] = 90
     $LogToConsole = false
     $LogToFile = false
     $TAVILYCONF['APIKey'] = 'tvly-test-key' # the .example placeholders count as not configured

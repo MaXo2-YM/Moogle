@@ -97,20 +97,25 @@ GitHub Actions runs them on every pull request, on every push to `master` and ev
 ## Features
 ### Daily Count
 #### Why is there a Daily Count of Searches ?
-Tavily's free plan gives 1,000 API credits a month (a basic search costs 1 credit, see their [pricing](https://www.tavily.com/pricing)). Above that, searches fail until next month, or you have to pay.
+Both search services are free up to a quota, and above it searches fail, or you have to pay:
+- Tavily (`!google`): 1,000 API credits a month, a basic search costs 1 credit (see their [pricing](https://www.tavily.com/pricing))
+- YouTube Data API (`!youtube`): 10,000 units a day, a `!youtube` costs 101
 
-A thousand searches a month is a lot for a small server, but if the bot feel usefull to your users -or you have a medium-to-big community- you maybe exceed this threshold.
+That's a lot for a small server, but if the bot feel usefull to your users -or you have a medium-to-big community- you maybe exceed these thresholds.
 
-Since I'm doing it for fun and don't want some spamming troll to burn the whole month in one evening, the utilisation of `!google` is capped to a number of requests a day. Set it to `30` to never go above the free plan.
+Since I'm doing it for fun and don't want some spamming troll to burn the whole month in one evening, each command is capped to a number of searches a day, counted separately: a `!youtube` costs nothing to Tavily, it doesn't use a `!google` search.
 
 #### How does it work ?
-Daily count lock is enabled by default, if you want to uncap the search, you can :
+Each service sets its limit with `dailyLimit` in its config file: `./conf/tavily.conf` (default: `30`, which never goes above Tavily's free plan) and `./conf/youtube.conf` (default: `90`, which stays under YouTube's daily quota). When a command reaches its limit, it answers when its next search will be possible. The bot's [Discord status](#discord-status) turns orange for `!google` only, its main command.
 
+To lift every limit:
 - use the option `--uncap` (or `-uc` to be coupled with other options) when you launch directly the bot
-> Ex : `$ ruby main.rb -v`
-- edit `./conf/app.conf` and put the `$LimitSearch` constant to `0` (default: `100`).
+> Ex : `$ ruby main.rb -uc`
+- or put `dailyLimit` to `0` in the config of the service.
 
-You also can put it to whatever number you feel acceptable if you already pay for a Tavily plan or if your Discord server generate money and you don't mind to paying for this service but don't want to exceed a certain amount.
+You also can put it to whatever number you feel acceptable if you already pay for a plan or if your Discord server generate money and you don't mind to paying for this service but don't want to exceed a certain amount.
+
+Before November 2026 a single limit, `$LimitSearch` in `./conf/app.conf`, counted both commands: it still sets `!google`'s limit when `./conf/tavily.conf` has no `dailyLimit`.
 
 ### Adult content filter
 Adult results (pages and images) are only sent in channels marked as NSFW in Discord (Edit Channel > Age-Restricted Channel), and in the threads of these channels. Everywhere else, direct messages included, the search uses Tavily's `safe_search`, which filters them out. That's Discord's own rule for bots, and only members allowed to manage channels can mark one NSFW: there is nothing to set up in the bot.
@@ -122,7 +127,7 @@ The filter is Tavily's: it works like a search engine safe search, it blocks a l
 ### Discord status
 The bot's status shows whether a search can be made:
 - online (green) and "Watching !google <search>" when it can
-- Idle (orange) and "Watching ⏳ out of searches until <date>" from the last search allowed by the [daily count](#daily-count) until the oldest search of the day is 24 hours old: it goes back to green by itself at that time
+- Idle (orange) and "Watching ⏳ out of searches until <date>" from the last search allowed by `!google`'s [daily count](#daily-count) until the oldest search of the day is 24 hours old: it goes back to green by itself at that time
 - Do Not Disturb (red) and "Watching ⚠ search down" after a failed Tavily call (refused key, exhausted credits, Tavily or network down), until the next successful search. It wins over orange.
 
 So that the status doesn't wait for a user to find the failure, the bot also runs a real search every 24 hours, outside the daily count. It costs 1 Tavily credit a day (about 30 of the 1,000 free monthly credits). Change the period with `$HealthCheckHours` in `./conf/app.conf`, or put it to `0` to disable it.
@@ -187,7 +192,7 @@ It sends the link of the first video of a YouTube search, and Discord turns it i
 
 Why not a nicer embed? A bot can't put a video player in its own embed messages (Discord ignores their video field), and when a bot's message has an embed Discord doesn't add the link's preview either: the plain link with text above is the only way to get the player. The description can't ping anyone, even if it contains `@everyone`.
 
-By default it only looks for videos that can play outside YouTube, so the player works in Discord: set `embeddableOnly` to `false` in `./conf/youtube.conf` to look for any video. `regionCode` (ex: `'FR'`) and `relevanceLanguage` (ex: `'fr'`) get results closer to your users. Adult videos follow the [adult content filter](#adult-content-filter) (YouTube's `safeSearch` is `strict` outside NSFW channels), and the searches count in the [daily count](#daily-count) with `!google`.
+By default it only looks for videos that can play outside YouTube, so the player works in Discord: set `embeddableOnly` to `false` in `./conf/youtube.conf` to look for any video. `regionCode` (ex: `'FR'`) and `relevanceLanguage` (ex: `'fr'`) get results closer to your users. Adult videos follow the [adult content filter](#adult-content-filter) (YouTube's `safeSearch` is `strict` outside NSFW channels), and the searches have their own [daily count](#daily-count), separate from `!google`'s.
 
 #### `!wiki <search>`
 >alias: `!wk` (casse insensitive)
