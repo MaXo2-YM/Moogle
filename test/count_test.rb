@@ -10,7 +10,7 @@ class CountTest < MoogleTest
   end
 
   def test_first_request_creates_the_count_file
-    assert checkCountRequestLimit(nil)
+    assert checkCountRequestLimit(GOOGLE_COUNT, 30)
     assert_equal 1, File.readlines('count').length
   end
 
@@ -29,9 +29,9 @@ class CountTest < MoogleTest
   end
 
   def test_limit_blocks_and_does_not_count
-    $LimitSearch = 2
-    2.times { assert checkCountRequestLimit(nil) }
-    refute checkCountRequestLimit(nil)
+    limit = 2
+    2.times { assert checkCountRequestLimit(GOOGLE_COUNT, limit) }
+    refute checkCountRequestLimit(GOOGLE_COUNT, limit)
     assert_equal 2, File.readlines('count').length
   end
 

@@ -15,7 +15,7 @@ def tavilySearch(message)
     return answerNotConfigured(message, 'before-coding')
   end
 
-  response = runSearch(message) do
+  response = runSearch(message, GOOGLE_COUNT, googleDailyLimit) do
     tavilyResponse = sendRequestToJSON(URI($TAVILYCONF['url']), createAPIBody(message))
     if(tavilyResponse['code'] == "200" && isImageSearch(message) && tavilyResponse['images'].to_a.empty?)
       tavilyResponse['code'] = "0"

@@ -1,16 +1,12 @@
-# The bot's Discord status tells whether a search can be made: red after a failed Tavily call until the next successful one, orange while the daily count is full, green otherwise
+# The bot's Discord status tells whether !google can search: red after a failed Tavily call until the next successful one, orange while its daily count is full, green otherwise
 $searchHealthy = true
 $shownStatus = nil
-
-def isLimitReached
-  $LimitSearch != 0 && countRecentRequest.length >= $LimitSearch
-end
 
 def currentStatus
   if(!$searchHealthy)
     [:dnd, $__status_search_down]
-  elsif(isLimitReached)
-    [:idle, $__status_limited.gsub('%1', getNextRequestTime(countRecentRequest))]
+  elsif(isLimitReached(GOOGLE_COUNT, googleDailyLimit))
+    [:idle, $__status_limited.gsub('%1', getNextRequestTime(countRecentRequest(GOOGLE_COUNT)))]
   else
     [:online, $__status_ok]
   end
@@ -33,7 +29,7 @@ end
 # Back to green on its own when the oldest search of the day leaves the 24 h window, without waiting for someone to try
 def scheduleStatusRefresh(bot)
   $statusRefresh&.kill
-  nextRequest = Time.new(*countRecentRequest[0].split('.')) + 86400
+  nextRequest = Time.new(*countRecentRequest(GOOGLE_COUNT)[0].split('.')) + 86400
   $statusRefresh = Thread.new do
     sleep([nextRequest - Time.now, 0].max + 1)
     begin

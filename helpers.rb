@@ -24,12 +24,12 @@ def answerNotConfigured(message, readmeAnchor)
   message.respond $__error_not_configured.gsub('%1', "<#{README_URL}##{readmeAnchor}>")
 end
 
-# Daily count, missing query, log and answer, around the API request the block makes
-def runSearch(message)
+# Daily count of the service, missing query, log and answer, around the API request the block makes
+def runSearch(message, countFile, limit)
   goSearch = true
 
-  if($LimitSearch != 0 && isThereAQuery(message)) # a command without query doesn't cost a search
-    goSearch = checkCountRequestLimit(message)
+  if(limit != 0 && isThereAQuery(message)) # a command without query doesn't cost a search
+    goSearch = checkCountRequestLimit(countFile, limit)
   end
 
   if(goSearch)
@@ -44,7 +44,7 @@ def runSearch(message)
     end
 
   else
-    response = Hash["code" => "999"]
+    response = Hash["code" => "999", "nextRequest" => getNextRequestTime(countRecentRequest(countFile))]
   end
   sendResponseToChannel(message, response)
   response
@@ -100,7 +100,7 @@ def sendResponseToChannel(message, response)
   when "-1"
     message.respond $__error_no_query.gsub(/%[0-9]/, '%1' => extractPrefix(message) + extractCmd(message))
   when "999"
-    message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => getNextRequestTime(countRecentRequest))
+    message.respond $__error_cap_limit_exceeded.gsub(/%[0-9]/, "%1" => response['nextRequest'])
   else
     message.respond $__error_api.gsub(/%[0-9]/, '%1' => response['code'], '%2' => response['message'])
   end

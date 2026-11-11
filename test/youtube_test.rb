@@ -65,7 +65,7 @@ class YoutubeTest < MoogleTest
 
     assert_equal ["📅 10/25/2009 · 👁 1.7B views · ⏱ 3:33\n> The official video for \"Never Gonna Give You Up\" by Rick Astley.\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ"], message.answers
     assert_empty message.channel.embeds
-    assert_equal 1, File.readlines('count').length
+    assert_equal 1, File.readlines(YOUTUBE_COUNT).length
   end
 
   def test_details_request_asks_for_the_found_video
@@ -165,15 +165,57 @@ class YoutubeTest < MoogleTest
     assert_match '!yt <search>', message.answers.first
   end
 
-  def test_shares_the_daily_count_with_google
-    $LimitSearch = 1
+  def test_has_its_own_daily_count
+    $TAVILYCONF['dailyLimit'] = 1
     withHTTP(FakeHTTP.new(tavilyResponse(results: [tavilyResult]))) { tavilySearch(FakeMessage.new('!google recette crêpes')) }
 
     message = FakeMessage.new('!yt bongo cat')
+    withHTTP(FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'))) { youtubeSearch(message) }
+    assert_equal ['https://www.youtube.com/watch?v=dQw4w9WgXcQ'], message.answers
+    assert_equal 1, File.readlines(GOOGLE_COUNT).length
+    assert_equal 1, File.readlines(YOUTUBE_COUNT).length
+  end
+
+  def test_its_own_limit_blocks_it_and_tells_when
+    $YOUTUBECONF['dailyLimit'] = 1
     fake = FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'))
-    withHTTP(fake) { youtubeSearch(message) }
-    assert_empty fake.requests
-    assert_match "I'll not be able to perform search before", message.answers.first
+    withHTTP(fake) do
+      youtubeSearch(FakeMessage.new('!yt bongo cat'))
+      message = FakeMessage.new('!yt never gonna give you up')
+      youtubeSearch(message)
+      nextRequest = getNextRequestTime(countRecentRequest(YOUTUBE_COUNT))
+      assert_equal [$__error_cap_limit_exceeded.gsub('%1', nextRequest)], message.answers
+    end
+    assert_equal 2, fake.requests.length # search and details of the first video only
+    refute File.exist?(GOOGLE_COUNT)
+  end
+
+  def test_its_limit_doesnt_turn_the_status_orange
+    $YOUTUBECONF['dailyLimit'] = 1
+    message = FakeMessage.new('!yt bongo cat')
+    withHTTP(FakeHTTP.new(youtubeResponse('dQw4w9WgXcQ'))) { youtubeSearch(message) }
+    assert_empty message.bot.statuses
+    assert_equal :online, currentStatus[0]
+  end
+
+  def test_default_limits
+    $TAVILYCONF.delete('dailyLimit')
+    $YOUTUBECONF.delete('dailyLimit')
+    assert_equal 30, googleDailyLimit
+    assert_equal 90, youtubeDailyLimit
+  end
+
+  def test_old_shared_limit_still_sets_google
+    $TAVILYCONF.delete('dailyLimit')
+    $LimitSearch = 12
+    assert_equal 12, googleDailyLimit
+    assert_equal 90, youtubeDailyLimit
+  end
+
+  def test_uncap_lifts_every_limit
+    $Uncapped = true
+    assert_equal 0, googleDailyLimit
+    assert_equal 0, youtubeDailyLimit
   end
 
   def test_logs_the_video_link

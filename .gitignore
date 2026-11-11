@@ -6,3 +6,4 @@ conf/discord.conf
 log/*
 !log/.gitkeep
 count
+count_youtube
