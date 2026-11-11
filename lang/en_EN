@@ -14,4 +14,4 @@ $__number_units = ["", "K", "M", "B"]
 $__decimal_separator = "."
 $__wiki_footer = "Wikipedia (%1)"
 $__wiki_fallback = "Wikipedia (%1) · nothing found in %2"
-$__wiki_disambiguation = "Several articles share this name: pick the right one on Wikipedia."
+$__wiki_disambiguation = "Did you think I was a fucking LLM to guess what you want to know? Pick one: %1"

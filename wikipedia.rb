@@ -86,7 +86,7 @@ def fillWikiEmbed(embed, response)
   embed.title = response['title']
   embed.url = response['wikiUrl']
   if(response['type'] == 'disambiguation') # several articles share this name: the page lists them
-    embed.description = $__wiki_disambiguation
+    embed.description = $__wiki_disambiguation.gsub('%1', "[#{response['title']}](#{response['wikiUrl']})")
   else
     description = response['description'].to_s.empty? ? '' : "*#{response['description']}*\n"
     embed.description = description + cutText(response['extract'].to_s, 300)
