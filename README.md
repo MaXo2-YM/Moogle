@@ -44,6 +44,7 @@ The Google version is still in the history: see commit `4b237a5` (`google.rb` an
 1. ~~Add `!help` command~~
 1. ~~Add `!wiki` command~~
 1. ~~Add `!steam` command~~
+1. ~~Add `!wikt` command~~
 1. ~~Add `!amazon` command~~: dropped, see [below](#why-no-amazon-nor-instant-gaming-command-)
 1. ~~Add `!instant-gaming` command~~: a link in `!steam` instead, see [below](#why-no-amazon-nor-instant-gaming-command-)
 1. Add google translate ?
@@ -77,16 +78,16 @@ You'll need 2 things before you even get started, and a third one for `!youtube`
 2. Install dependencies with `$ bundle install` (the versions are locked in `Gemfile.lock`)
 3. Create your config from the examples: `$ for f in conf/*.conf.example; do cp "$f" "${f%.example}"; done`
 4. Set the tokens and keys:
-- `APIKey` in `./conf/tavily.conf`
-- `token` in `./conf/discord.conf`
-- `APIKey` in `./conf/youtube.conf` for `!youtube`
-- nothing for `!wiki` and `!steam`: their APIs need no key, `./conf/wikipedia.conf` and `./conf/steam.conf` only change their defaults
-
-A command whose config file is missing or still has the example key answers that its service isn't set up, with a link to this README, instead of failing.
+   - `token` in `./conf/discord.conf`
+   - `APIKey` in `./conf/tavily.conf` for `!google`
+   - `APIKey` in `./conf/youtube.conf` for `!youtube`
+   - nothing for `!wiki`, `!wikt` and `!steam`: their APIs need no key, `./conf/wikipedia.conf`, `./conf/wiktionary.conf` and `./conf/steam.conf` only change their defaults
 5. In the [Discord Developer Portal](https://discord.com/developers/applications), enable **Message Content Intent** in your bot's settings: without it, Discord sends the server messages empty and the bot only answers mentions
 6. Run with `$ bundle exec ruby main.rb`
 
-`conf/app.conf`, `conf/discord.conf` and `conf/tavily.conf` are ignored by git: your token and keys can't be committed by mistake. Only the `.example` files are versioned, update them when you add a setting.
+A command whose config file is missing or still has the example key answers that its service isn't set up, with a link to this README, instead of failing.
+
+The config files (`./conf/*.conf`, except `cmd.conf`) are ignored by git: your token and keys can't be committed by mistake. Only the `.example` files are versioned, update them when you add a setting.
 
 ### Run as a service
 On a Linux server, `deploy/moogle.service` runs the bot as a systemd user service: it starts at boot, restarts 10 seconds after a crash, and writes its console output to `./log/console.log`. It expects the repository in `~/Moogle` and Ruby from rbenv (systemd 240 or newer), edit the paths otherwise.
