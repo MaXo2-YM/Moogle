@@ -1,6 +1,7 @@
 require 'discordrb'
 require_relative 'tavily'
 require_relative 'youtube'
+require_relative 'wikipedia'
 require_relative 'helpers'
 require_relative 'count'
 load './conf/app.conf'
@@ -41,6 +42,8 @@ bot.message do |message|
       tavilySearch message
     elsif(extractCmd(message).match($commands['youtube']))
       youtubeSearch message
+    elsif(extractCmd(message).match($commands['wiki']))
+      wikiSearch message
     end
   end
 end
